@@ -1,0 +1,27 @@
+{
+  "test": "这是中文简体的测试信息",
+  "top":  {
+    "client_download": "客户端下载",
+    "mobile_version": "移动版",
+    "for_collection": "加入收藏",
+    "line_detection": "线路检测",
+    "licence": "牌照展示",
+    "customer_service": "在线客服",
+    "simplified_chinese": "简体中文",
+    "current_time": "系统当前时间",
+    "beijing": "北京",
+    "home": "首页",
+    "platform_features": "平台特色",
+    "video": "OG视讯",
+    "sport": "OG体育",
+    "live_game": "真人娱乐",
+    "electronic_game": "电子游艺",
+    "sports_competition": "体育竞技",
+    "lottery_games": "彩票游戏",
+    "fishing_game": "捕鱼游戏",
+    "tabel_game": "棋牌游戏",
+    "e_sports": "电子竞技",
+    "promotion": "优惠活动",
+    "demo": "试玩体验"
+  }
+}

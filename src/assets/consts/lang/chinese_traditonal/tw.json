@@ -1,0 +1,27 @@
+{
+  "test": "這是中文的測試信息",
+  "top":  {
+    "client_download": "客戶端下載",
+    "mobile_version": "移動版",
+    "for_collection": "加入收藏",
+    "line_detection": "線路檢測",
+    "licence": "牌照展示",
+    "customer_service": "在線客服",
+    "simplified_chinese": "簡體中文",
+    "current_time": "系統當前時間",
+    "beijing": "北京",
+    "home": "首页",
+    "platform_features": "平台特色",
+    "video": "OG視訊",
+    "sport": "OG體育",
+    "live_game": "真人娛樂",
+    "electronic_game": "電子遊藝",
+    "sports_competition": "體育競技",
+    "lottery_games": "彩票遊戲",
+    "fishing_game": "捕魚遊戲",
+    "tabel_game": "棋牌遊戲",
+    "e_sports": "電子競技",
+    "promotion": "優惠活動",
+    "demo": "試玩體驗"
+  }
+}

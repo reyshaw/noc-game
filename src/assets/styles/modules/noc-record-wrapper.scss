@@ -1,0 +1,31 @@
+.record-wrapper {
+  position: relative;
+  width: 98%;
+  top: 10px;
+  height: auto;
+  background: #fff;
+  margin: 0 auto;
+  border-radius: 10px;
+  padding: 10px;
+  box-sizing: border-box;
+  main {
+    margin-top: 20px;
+    border: 1px solid #cbd1e3;
+    /*max-height: 550px;*/
+    width: 100%;
+    border-radius: 3px;
+    /*padding-bottom: 10px;*/
+    overflow: hidden;
+    .el-scrollbar {
+      /*height: 550px;*/
+      /*height: 100%;*/ /**大于17的时候要变成 550px***/
+      /*width: 100%;*/
+      //padding-bottom: 10px; /***大于17的时候要去掉**/
+    }
+    .el-table {
+      width: 100%;
+      border: none;
+      margin-bottom: 17px;
+    }
+  }
+}

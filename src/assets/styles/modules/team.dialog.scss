@@ -1,0 +1,24 @@
+.team-dialog {
+  .el-radio {
+    .el-radio__input {
+      display: inline!important;
+    }
+  }
+  h1 {
+    font-size: 18px;
+    line-height: 35px;
+    text-indent: 20px;
+  }
+  .el-input {
+    width: 200px;
+  }
+  .el-form-item{
+    margin-top: 5px;
+    margin-bottom: 10px!important;
+  }
+  .dialog-footer {
+    text-align: right;
+    box-sizing: border-box;
+    padding: 10px;
+  }
+}

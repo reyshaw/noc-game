@@ -1,0 +1,29 @@
+{
+  "test": "it's a test information",
+  "top":  {
+    "client_download": "Client Download",
+    "mobile_version": "Mobile Version",
+    "for_collection": "For Collection",
+    "line_detection": "Line Detection",
+    "licence": "Licence",
+    "customer_service": "Customer Service",
+    "simplified_chinese": "Simplified Chinese",
+    "current_time": "Current Time",
+    "beijing": "beijing",
+    "home": "Home",
+    "platform_features": "Platform",
+    "video": "OG Live",
+    "sport": "OG Sport",
+    "live_game": "Live Game",
+    "electronic_game": "Video Game",
+    "sports_competition": "Sports",
+    "lottery_games": "Lottery",
+    "fishing_game": "Fishing",
+    "tabel_game": "Tabel Game",
+    "e_sports": "E-Sports",
+    "promotion": "Promotion",
+    "demo": "Dome"
+  }
+}
+
+

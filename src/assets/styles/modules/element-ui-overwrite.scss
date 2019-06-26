@@ -1,0 +1,145 @@
+/** 去掉对话框头尾 **/
+.el-dialog__header{
+  display: none;
+}
+.el-dialog__footer{
+  display: none;
+}
+.el-dialog__body{
+  padding: 5px;
+}
+.eld400 {
+  .el-dialog {
+    width: 400px;
+  }
+}
+.eld600 {
+  .el-dialog {
+    width: 600px;
+  }
+}
+.eld800 {
+  .el-dialog {
+    width: 800px;
+  }
+}
+.eld850 {
+  .el-dialog {
+    width: 850px;
+  }
+}
+.el-scrollbar__wrap {
+  overflow-x: auto;  /**会影响到select的下拉**/
+}
+.el-select-dropdown .el-scrollbar__wrap {
+  overflow-x: scroll;
+}
+
+
+/** 表单样式重写 **/
+.el-form{
+  .el-form-item{
+    .el-input--medium{
+      .el-input__inner{
+        height: 48px;
+        padding-left: 45px;
+      }
+      .iconfont, .el-input__icon{
+        line-height: 50px;
+        &::before{
+          font-size: 19px;
+          color: #000;
+          margin-left: 10px;
+        }
+      }
+      .el-input-group__append, .el-input-group__prepend{
+        background-color: #fff;
+        color: #0099cc;
+        font-weight: bold;
+        vertical-align: middle;
+        display: table-cell;
+        position: relative;
+        border-left: 0;
+        padding: 0 20px;
+        width: 1px;
+        white-space: nowrap;
+      }
+    }
+  }
+}
+/** panel样式重写 **/
+.el-tabs{
+  .el-tabs__header{
+    .el-tabs__nav-scroll{
+      background-color: #C6CDE0;
+      height: 55px;
+      .el-tabs__nav{
+        padding-left: 16px;
+        border: none;
+        .el-tabs__item{
+          font-weight: bold;
+          color: #7884A2;
+          line-height: 55px;
+          height: 55px;
+          border: none;
+        }
+        .el-tabs__item.is-active{
+          background-color: #DCE4FA;
+          color: #000;
+          font-weight: bold;
+          border-bottom: none;
+        }
+      }
+    }
+  }
+}
+/**关于我们tab重写**/
+.el-tabs.bgf .el-tabs__header .el-tabs__nav-scroll {
+  background: #fff;
+  height: 27px;
+}
+.el-tabs.bgf .el-tabs__header .el-tabs__nav-scroll .el-tabs__nav .el-tabs__item {
+  height: 27px;
+  line-height: 26px;
+  font-weight: normal;
+}
+
+/** radio样式重写 **/
+.el-radio{
+  .el-radio__input{
+    display: none;
+  }
+}
+
+/**走马灯样式重写**/
+.el-carousel__button{
+  width: 15px;
+  height: 15px;
+  border-radius: 8px;
+}
+
+/**走马灯样式重写**/
+.el-loading-spinner{
+  top: 50vh;
+  i{
+    font-size: 50px !important;
+  }
+}
+
+/***slider样式重写***/
+.home-banner {
+  .el-carousel__button {
+    width: 10px;
+    height: 10px;
+    background: #000;
+    border-radius: 50%;
+  }
+  .el-carousel__indicator.is-active button {
+    width: 20px;
+    background: #fff;
+    border-radius: 5px;
+  }
+}
+.el-table th {
+  padding: 2px 0;
+}
