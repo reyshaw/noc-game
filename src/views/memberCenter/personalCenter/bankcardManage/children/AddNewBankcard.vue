@@ -9,7 +9,7 @@
 <!--        <el-select v-model="form.account" placeholder="请绑定银行卡号" size="mini">-->
 <!--          <el-option v-for="(item, index) in bankList" :key="index" :label="item.cnName" :value="item.id"></el-option>-->
 <!--        </el-select>-->
-        <el-input v-model="form.payName" size="mini" style="width: 195px" placeholder="请绑定银行卡号"></el-input>
+        <el-input v-model="form.payName" size="mini" style="width: 195px" placeholder="请输入发卡银行"></el-input>
       </el-form-item>
       <el-form-item prop="bankCardNum" label="银行卡号：">
         <el-input v-model="form.cardNo" placeholder="请输入银行卡号" size="mini" style="width: 195px"></el-input>
@@ -26,7 +26,7 @@
 
 <script>
 import { PATH_BANKCARD_ADDCARDS } from '@/service/member/member_center.url'
-import { mapState } from 'vuex'
+import { mapGetters } from 'vuex'
 export default {
   name: 'add_new_bankcard',
   props: {
@@ -46,10 +46,11 @@ export default {
     }
   },
   computed: {
-    ...mapState(['memberInfo'])
+    ...mapGetters(['BASE_INFO'])
   },
   mounted () {
-    this.form.cardName = this.memberInfo.memberRealName
+    // console.log(111, this.BASE_INFO)
+    this.form.cardName = this.BASE_INFO.memberRealName
   },
   methods: {
     handleBind () {
@@ -61,7 +62,7 @@ export default {
         bankBranchName
       }
       this.post(PATH_BANKCARD_ADDCARDS, payload).then(res => {
-        if (res) {
+        if (res.status) {
           this.$message({
             type: 'success',
             message: '恭喜您添加成功'
@@ -73,7 +74,7 @@ export default {
           })
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     }
   }

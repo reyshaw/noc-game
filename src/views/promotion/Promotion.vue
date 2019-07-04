@@ -187,7 +187,7 @@ export default {
         this.loadingGame = false
       }, err => {
         this.loadingGame = false
-        console.log(err)
+        this.$message.error(err)
       })
     },
     setPosition (width) { // 根据页面宽度设置 活动详情 的位置

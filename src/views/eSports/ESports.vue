@@ -88,7 +88,7 @@ export default {
     //   shareholderId: this.SUPER_IDS.shareholderId, // 股东id
     //   terminalType: CONST.TERMINAL_TYPE // 终端类型(1:pc,2:手机)
     // })
-    // console.log(GAME_PATH.PATH_LIST_PROVIDER)
+    // // console.log(GAME_PATH.PATH_LIST_PROVIDER)
     this.getPlatformUrl('ESports')
   },
   mounted () {
@@ -96,7 +96,7 @@ export default {
   },
   methods: {
     callback () {
-      console.log(`call back`)
+      // console.log(`call back`)
     },
     showSwiper (currentSwiper) {
       this.currentSwiper.name = currentSwiper
@@ -110,7 +110,7 @@ export default {
     },
     onSearch () {
       if (this.searchText.length) {
-        console.log(this.searchText)
+        // console.log(this.searchText)
       }
     }
   }
@@ -255,5 +255,8 @@ export default {
   .swiper-button-prev, .swiper-container-rtl .swiper-button-next {
     left: 50%!important;
     margin-left: -680px;
+  }
+  .swiper-slide-active>img {
+    box-shadow: 0 0 10px #e1e1e1;
   }
 </style>

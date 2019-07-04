@@ -1,6 +1,6 @@
 import axios from 'axios'
-import {SUCCESS, FAIL, ERROR_SHOW_MSG} from './response.status'
-import {Message} from 'element-ui'
+import {SUCCESS} from './response.status' // FAIL, ERROR_SHOW_MSG
+import {Message, Notification} from 'element-ui'
 import router from '@/router'
 import store from '@/store'
 
@@ -25,8 +25,22 @@ request.interceptors.request.use(config => {
   }
   return config
 }, error => {
+  Notification.error({
+    title: `请求头错误:`,
+    message: error
+  })
   Promise.reject(error)
 })
+
+const getData = function (res) {
+  if (res && res.data) {
+    if ([0, false].includes(res.data.data)) {
+      return res.data.data
+    } else {
+      return res.data.data || undefined
+    }
+  }
+}
 
 // 拦截响应
 request.interceptors.response.use(res => { // 200开头的
@@ -34,9 +48,13 @@ request.interceptors.response.use(res => { // 200开头的
   switch (Number(res.data.code)) {
     case 1:
     case 200:
+    case 6068:
+    case 6022:
+    case 6017:
       return {
         status: SUCCESS,
-        data: (res && res.data && res.data.data) || {}
+        data: getData(res),
+        msg: (res && res.data.msg) || {}
       }
     case 5998:
     case 5031:
@@ -45,19 +63,27 @@ request.interceptors.response.use(res => { // 200开头的
     case 5999:
     case 1026:
     case 1000:
-      Message.error(`认证失败： ${res.data.msg}`)
-      store.dispatch('SET_POLLING', false)
-      store.commit('SET_TOKEN', null)
-      store.commit('SET_BASE_INFO', {})
+      Notification.error({
+        title: `认证失败`,
+        message: `${res.data.msg}`
+      })
+      store.dispatch('SET_LOGIN_INFO', {token: null, baseInfo: {}, startPolling: false})
       setTimeout(() => { router.push(`/${store.state.role}/index`) }, 500)
       break
     default:
-      Message.error(`接口错误： ${res.data.msg}`)
-      return {
-        status: FAIL,
-        error: ERROR_SHOW_MSG,
-        msg: '未定义的错误: ' + res.data.msg
-      }
+      Notification.error({
+        title: `接口错误`,
+        message: res.data.msg
+      })
+      return Promise.resolve({
+        status: res.data.msg
+      })
+      // throw new Error(res.data.msg)
+      // return {
+      //   status: FAIL,
+      //   error: ERROR_SHOW_MSG,
+      //   msg: '未定义的错误: ' + res.data.msg
+      // }
   }
 }, error => {
   store.commit('SET_LOADING', false)
@@ -76,10 +102,12 @@ request.interceptors.response.use(res => { // 200开头的
       case 505: error.message = 'HTTP版本不受支持'; break
       default: error.message = '未捕获到的状态码'; break
     }
-    Message.error(`状态码错误：${error.message}`)
+    Message.error({
+      title: `状态码异常`,
+      message: `${error.message}`
+    })
   }
-  return Promise.reject(error)
+  return Promise.resolve(error)
 }
 )
-
 export default request

@@ -2,7 +2,7 @@
   <div class="wrapper">
     <div class="content">
       <member-info v-if="ROLE==='member'"></member-info>
-      <member-function></member-function>
+      <member-function :proute="proute"></member-function>
     </div>
   </div>
 </template>
@@ -17,7 +17,17 @@ export default {
     MemberInfo,
     MemberFunction
   },
-  computed: mapGetters(['ROLE'])
+  data () {
+    return {
+      proute: ''
+    }
+  },
+  computed: mapGetters(['ROLE']),
+  beforeRouteUpdate (to, from, next) {
+    // console.log(to.name)
+    this.proute = to.name
+    next()
+  }
 }
 </script>
 

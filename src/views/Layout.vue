@@ -9,8 +9,8 @@
 </template>
 
 <script>
-import NocTop from '@/components/noc_top/NocTop'
-import NocBottom from '@/components/noc_bottom/NocBottom'
+import NocTop from '@/components/noc-top/NocTop'
+import NocBottom from '@/components/noc-bottom/NocBottom'
 import {mapGetters} from 'vuex'
 export default {
   name: 'layout',
@@ -31,11 +31,11 @@ export default {
   },
   watch: {
     'TAB_TITLE': (val) => { // 点击侧边滚动到顶部
-      // console.log(val)
+      // // console.log(val)
     }
   },
   beforeRouteEnter (to, from, next) {
-    // console.log(to)
+    // // console.log(to)
     next()
   }
 }

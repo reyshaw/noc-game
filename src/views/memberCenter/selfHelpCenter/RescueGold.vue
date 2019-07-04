@@ -103,7 +103,7 @@ export default {
         this.total = res.data.total
       }, err => {
         this.loading = false
-        console.log(err)
+        this.$message.error(err)
       })
     }
   }

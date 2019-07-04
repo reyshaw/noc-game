@@ -22,7 +22,7 @@
                 <el-input v-model.number="form.withdrawalAmount" placeholder="请输入取款金额" size="mini" :style="inputStyle"></el-input>
               </el-form-item>
               <el-form-item label="取款密码">
-                <el-input v-model="form.withdrawPassword" placeholder="请输入取款密码" size="mini" :style="inputStyle"></el-input>
+                <el-input type="password" v-model="form.withdrawPassword" placeholder="请输入取款密码" size="mini" :style="inputStyle"></el-input>
                 <a href="javascript: void(0);">忘记密码？</a>
                 <a href="javascript: void(0);">设置取款密码</a>
               </el-form-item>
@@ -77,7 +77,7 @@ export default {
     }
   },
   computed: {
-    ...mapState(['memberInfo'])
+    ...mapState(['baseInfo'])
   },
   mounted () {
     this.getBankList()
@@ -88,30 +88,32 @@ export default {
       this.post(PATH_WALLATBALANCE_PAY, {}).then(res => {
         this.drawableBalance = parseFloat(res.data.amount).toFixed(2)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     getBankList () { // 获取银行卡列表
-      this.post(PATH_CARDLIST_PAY).then(res => {
-        if (res) {
+      this.get(PATH_CARDLIST_PAY, {}).then(res => {
+        if (res.status) {
           this.options.backCardList = res.data.list
-          this.options.backCardList.map(obj => {
-            if (obj.setDefault === 1) {
-              this.form.bankCard = obj.cardId
-            }
-          })
-        } else {
-          this.$alert('您未没绑定取款银卡信息，请绑定后进行尝试', '暂时无法提款', {
-            confirmButtonText: '确定',
-            callback: action => {
-              this.$router.push({
-                name: 'bankcardManage'
-              })
-            }
-          })
+          if (this.options.backCardList.length === 0) {
+            this.$alert('您未没绑定取款银卡信息，请绑定后进行尝试', '暂时无法提款', {
+              confirmButtonText: '确定',
+              callback: action => {
+                this.$router.push({
+                  name: 'bankcardManage'
+                })
+              }
+            })
+          } else {
+            this.options.backCardList.map(obj => {
+              if (obj.setDefault === 1) {
+                this.form.bankCard = obj.cardId
+              }
+            })
+          }
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     handleWithdraw () {
@@ -121,21 +123,22 @@ export default {
             let bankCode = ''
             let bankName = ''
             this.options.backCardList.map(obj => {
-              console.log(obj.cardId === this.form.bankCard)
+              // console.log(obj.cardId === this.form.bankCard)
               if (obj.cardId === this.form.bankCard) {
                 bankCode = obj.cardNo
                 bankName = obj.payName
               }
             })
             let payload = {
+              cardId: this.form.bankCard,
               bankCode,
               bankName,
-              cardName: this.memberInfo.memberRealName,
+              cardName: this.baseInfo.memberRealName,
               money: this.form.withdrawalAmount,
               withdrawPassword: this.form.withdrawPassword
             }
             this.post(PATH_WITHDRAW_PAY, payload).then(res => {
-              if (res) {
+              if (res.status) {
                 this.$message({
                   type: 'success',
                   message: '恭喜您取款申请已发起，请稍后注意查询您的账户！'
@@ -147,7 +150,7 @@ export default {
                 })
               }
             }, err => {
-              console.log(err)
+              this.$message.error(err)
             })
           } else {
             this.$message('请输入取款密码')

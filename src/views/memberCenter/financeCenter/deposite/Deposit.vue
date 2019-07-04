@@ -57,9 +57,9 @@ export default {
         this.smlist = res.data.smlist
         this.zxlist = res.data.zxlist
         this.zzlist = res.data.zzlist
-        console.log(this.zxlist)
+        // console.log(this.zxlist)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     }
   }

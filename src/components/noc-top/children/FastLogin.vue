@@ -26,7 +26,7 @@
       <div class="register"><a href="javascript: void(0);" @click="jumpTo('register')">新用户注册</a></div>
     </div>
     <div><span class="otherWaysTitle">其他方式登录</span></div>
-    <div class="otherWays" @click="$emit('changeLoginStyle', 'qrCodeLogin')">
+    <div class="otherWays" @click="showWechatLogin">
       <span><i class="iconfont">&#xe7e5;</i></span>
       <span>微信</span>
     </div>
@@ -37,7 +37,6 @@
 import {getUUID} from '@/assets/scripts/utils'
 import { setSessionStorage } from '@/assets/scripts/storage'
 import { PATH_VERIFYCODE_IMAGE, PATH_MEMBERLOGIN_LOGIN } from '@/service/member/urls.js'
-import types from '@/store/share.types'
 import {mapMutations} from 'vuex'
 
 export default {
@@ -83,18 +82,27 @@ export default {
 
   },
   methods: {
-    ...mapMutations({
-      showLD: 'SHOWLOGINDIA'
-    }),
+    ...mapMutations('member', ['SET_LOGIN_DIALOG', 'SET_REGISTER_DIALOG']),
     jumpTo (route) {
-      this.$router.push({
-        name: route
-      })
-      this.$emit('closeDialog')
+      this.SET_REGISTER_DIALOG(true)
+      // this.$router.push('/member/register')
     },
-    forgetPassword () {
-      this.$store.commit(types.SHOWFORGETPWDDIA, true)
-      this.showLD(false)
+    showWechatLogin () {
+      this.SET_REGISTER_DIALOG(false)
+      this.$emit('changeLoginStyle', true)
+    },
+    forgetPassword () { // 忘记密码
+      this.SET_LOGIN_DIALOG(false)
+      this.$alert('将根据您提供的信息核对无异后提供账号', '请联系在线客服', {
+        confirmButtonText: '立即联系',
+        type: 'warning',
+        center: true,
+        callback: () => {
+          void (0)
+        }
+      })
+      // this.$store.commit(types.SHOWFORGETPWDDIA, true)
+      // this.showLD(false)
     },
     updateImgUrl () { // 验证码图片刷新
       this.imgUrl = ''
@@ -112,7 +120,7 @@ export default {
         if (valid) {
           this.loginNow()
         } else {
-          console.log('error submit!!')
+          // console.log('error submit!!')
           return false
         }
       })
@@ -124,9 +132,9 @@ export default {
           memberPassword: this.form.password, // 登录密码
           verifyCode: this.form.verifyCode // 验证码
         }
-        console.log(payload)
+        // console.log(payload)
         this.post(PATH_MEMBERLOGIN_LOGIN, payload).then(res => {
-          if (res.code === 1) {
+          if (res.status) {
             this.showLD(false)
             this.$store.commit('SET_TOKEN', res.data.token)
             this.$store.commit('SET_BASE_INFO', res.data.profile)
@@ -143,7 +151,7 @@ export default {
             // })
           }
         }, err => {
-          console.log(err)
+          this.$message.error(err)
         })
       } else {
         this.updateImgUrl()

@@ -215,7 +215,7 @@ export default {
       this.post(PATH_HOTGAMES_GAME, payload).then(res => {
         this.hotGames = res.data
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     gameTags () {
@@ -226,9 +226,9 @@ export default {
         terminalType: '1'
       }
       this.post(PATH_TAGLIST_GAME, payload).then(res => {
-        console.log(res)
+        // console.log(res)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     getPlatform () { // 获取游戏平台方法
@@ -243,7 +243,7 @@ export default {
         this.platformId = this.platformList[0].id
         this.getGameList()
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     changePlatform (id, i) {
@@ -272,13 +272,13 @@ export default {
       this.post(PATH_GAMEPLIST_GAME, payload).then((res) => {
         if (res.data.length > 0) {
           this.panelGames = this.panelGames.concat(res.data)
-          console.log(this.panelGames)
+          // console.log(this.panelGames)
           this.loadingGame = false
         } else {
           this.$refs.panelFoot.innerHTML = '<div class="loadingTips" style="text-align: center; color: #fff;line-height: 80px;">没有更多游戏了</div>'
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     enterGame (gameId) { // 进游戏方法
@@ -291,11 +291,11 @@ export default {
           providerId: this.platformId
         }
         this.post(PATH_LOGINURL_GAME, payload).then((res) => {
-          if (res.code === 200) {
+          if (res.status) {
             window.open(res.data, '_blank')
           }
         }, err => {
-          console.log(err)
+          this.$message.error(err)
         })
       } else {
         this.$message({

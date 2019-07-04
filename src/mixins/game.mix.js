@@ -4,8 +4,7 @@ import {
   PATH_LOBBYYRL_GAME,
   PATH_LOGINURL_GAME
 } from '@/service/member/urls.js'
-import {mapGetters} from 'vuex'
-import types from '@/store/share.types'
+import {mapGetters, mapMutations} from 'vuex'
 const gameMix = {
   data () {
     return {
@@ -24,6 +23,7 @@ const gameMix = {
     ...mapGetters(['SUPER_IDS', 'TOKEN'])
   },
   methods: {
+    ...mapMutations('member', ['SET_LOGIN_DIALOG']),
     async getPlatformUrl (category) { // 直接进游戏平台方法
       const payload = {
         category,
@@ -37,7 +37,7 @@ const gameMix = {
           this.platformIdList[i] = this.platformList[i].id
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     async getPlatform (category) { // 获取游戏平台方法
@@ -51,7 +51,7 @@ const gameMix = {
         this.platformList = res.data
         this.platformIdList = this.platformList[0].id
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     async getGameList (category) { // 获取游戏方法
@@ -67,18 +67,15 @@ const gameMix = {
         terminalType: '1',
         pageDomain: this.pageDomain
       }
-      console.log(1, this.platformId)
       await this.post(PATH_GAMEPLIST_GAME, payload).then((res) => {
         if (res.data.length > 0) {
           this.gameList = this.gameList.concat(res.data)
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     async enterGame (gameId, i) { // 进游戏方法
-      console.log(this.platformIdList)
-      console.log(i)
       if (this.TOKEN) {
         const payload = {
           gameId,
@@ -88,18 +85,19 @@ const gameMix = {
           providerId: this.platformIdList[i]
         }
         await this.post(PATH_LOGINURL_GAME, payload).then((res) => {
-          if (res.code === 200) {
+          if (res.status) {
             window.open(res.data, '_blank')
           }
         }, err => {
-          console.log(err)
+          this.$message.error(err)
         })
       } else {
-        this.$message({
-          type: 'warning',
-          message: '请先登录'
-        })
-        this.$store.commit(types.SHOWLOGINDIA, true)
+        // this.$message({
+        //   type: 'warning',
+        //   message: '请先登录'
+        // })
+        this.SET_LOGIN_DIALOG(true)
+        // this.$store.commit(types.SET_LOGIN_DIALOG, true)
       }
     }
   }

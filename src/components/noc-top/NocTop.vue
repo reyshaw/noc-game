@@ -1,7 +1,6 @@
 <template>
   <div class="topWrapper">
     <div class="content">
-<!--      <div class="jump"  ></div>-->
       <div class="logo" @click="jumpTo('index')" >
 <!--  <embed src="../../../static/flash/LogoAnime_4-1.swf" quality="high" type="application/x-shockwave-flash" width="200" height="100">-->
        <!-- <object @click="jumpTo('index')"
@@ -13,6 +12,7 @@
           <param name="wmode" value="transparent">
           <param name="quality" value="high">
         </object>-->
+<!--        logo动图-->
         <video autoplay loop muted style="width: 240px; height: 127px;">
           <source src="~@/assets/media/logo.mp4" type="video/mp4"/>
           浏览器不支持 video 标签，建议升级浏览器。
@@ -21,23 +21,27 @@
         </video>
         <span class="subLogo" v-hidden>旗舰店</span>
       </div>
+<!--      顶部小菜单、在线客服，语言切换等-->
       <top-tooltips></top-tooltips>
       <div class="mainMenu" style="float: right">
+<!--        目录菜单-->
         <noc-menu></noc-menu>
       </div>
     </div>
+<!--    快速登录（用户信息）条-->
     <noc-tooltips></noc-tooltips>
+<!--    快速注册（登录）弹窗-->
     <el-dialog
       width="380px"
       :modal="false"
       ref="loginDialog"
-      :visible.sync="showLoginDia"
-      v-if='showLoginDia'>
+      :visible.sync="dialogFlag">
       <i class="el-icon-close dialogCloese" @click="closeLoginDia"></i>
       <div class="dialogTitle"><span>{{dialogType === 'register' ? '快速注册' : '会员登录'}}</span></div>
       <fast-register v-if="dialogType === 'register'"></fast-register>
-      <fast-login v-if="dialogType === 'login'" @changeLoginStyle="changeLoginStyle" @closeDialog="closeDialog"></fast-login>
-      <code-login v-if="dialogType === 'qrCodeLogin'" @changeLoginStyle="changeLoginStyle" @closeDialog="closeDialog"></code-login>
+      <fast-login v-if="dialogType === 'login'" @changeLoginStyle="changeLoginStyle"></fast-login>
+      <!-- <code-login v-if="dialogType === 'qrCodeLogin'" @changeLoginStyle="changeLoginStyle"></code-login> -->
+      <code-login v-if="showqrCodeLogin" @changeLoginStyle="changeLoginStyle"></code-login>
     </el-dialog>
     <forget-password :dialogVisible = 'showForgetPwdDia' @update="update"></forget-password>
   </div>
@@ -51,53 +55,63 @@ import FastRegister from './children/FastRegister'
 import CodeLogin from './children/CodeLogin'
 import FastLogin from './children/FastLogin'
 import { setLocalStorage } from '@/assets/scripts/storage'
-import ForgetPassword from '@/components/noc_top/children/ForgetPassword'
-// import store from '@/store/share.store'
-import {mapMutations} from 'vuex'
+import ForgetPassword from '@/components/noc-top/children/ForgetPassword'
+import {mapMutations, mapGetters} from 'vuex'
 export default {
   name: 'noc_top',
   components: {
-    NocMenu,
-    TopTooltips,
-    FastRegister,
-    FastLogin,
-    ForgetPassword,
-    CodeLogin,
-    NocTooltips
+    NocMenu, // 目录菜单
+    TopTooltips, // 顶部快捷功能菜单
+    FastRegister, // 快速注册弹窗内部表单组件
+    FastLogin, // 快速登录弹窗内部表单组件
+    ForgetPassword, // 忘记密码弹窗内部表单组件
+    CodeLogin, // 二维码快速登录弹窗内部表单组件
+    NocTooltips // 登录信息条
   },
   data () {
     return {
-      dialogType: 'login',
-      dialogVisible: false,
-      showLoginDia: false,
-      showForgetPwdDia: false
+      // dialogType: 'login', // 弹窗类型
+      dialogVisible: false, // 弹窗显示控制key
+      showForgetPwdDia: false,
+      showqrCodeLogin: false // 是不是显示扫码登录
+    }
+  },
+  computed: {
+    ...mapGetters('member', ['LOGIN_DIALOG', 'REGISTER_DIALOG']),
+    dialogFlag () { // 是否显示弹框
+      return this.LOGIN_DIALOG || this.REGISTER_DIALOG || this.showqrCodeLogin
+    },
+    dialogType () { // 登录或注册类型
+      let result = ''
+      if (this.LOGIN_DIALOG) {
+        result = 'login'
+      } else if (this.REGISTER_DIALOG) {
+        result = 'register'
+      } else {
+        result = 'qrCodeLogin'
+      }
+      return result
     }
   },
   methods: {
-    ...mapMutations({
+    ...mapMutations('member', {
       showFPD: 'SHOWFORGETPWDDIA',
-      showLD: 'SHOWLOGINDIA'
+      showLD: 'SET_LOGIN_DIALOG'
     }),
     update () {
       this.showFPD(false)
     },
-    closeLoginDia () {
+    closeLoginDia () { // 关闭弹框
       this.showLD(false)
-    },
-    closeDialog () {
-      this.dialogVisible = false
+      this.showqrCodeLogin = false
     },
     jumpTo (path) { // 路由跳转
       this.$router.push({
         name: path
       })
     },
-    showLoginDialog () {
-      this.dialogVisible = true
-      this.dialogType = 'login'
-    },
-    changeLoginStyle (type) {
-      this.dialogType = type
+    changeLoginStyle (flag) {
+      this.showqrCodeLogin = flag
     },
     changeLanguage (ref, key) { // 语言变换
       // ref.target.parentElement.parentElement.parentElement.style.display = 'none'

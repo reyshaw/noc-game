@@ -27,9 +27,9 @@ export default {
   },
   methods: {
     handleRecovery () { // 一键回收
-      console.log(1)
+      // console.log(1)
       this.get(PATH_RECOVERY_PAY, {}).then(res => {
-        if (res.code === 1) {
+        if (res.status) {
           this.$message({
             type: 'success',
             message: '恭喜您回收成功'
@@ -41,7 +41,7 @@ export default {
           })
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     handleExchange () { // 切换页面

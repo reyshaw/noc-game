@@ -135,12 +135,16 @@
       </div>
     </section>
 
-    <el-dialog
-      :visible.sync="dialogVisible"
-      width="40%">
-      <img src="../../../src/assets/imgs/u1427.jpg" alt="">
-      <i class="el-icon-error close" @click="dialogVisible=!dialogVisible"></i>
-    </el-dialog>
+    <el-scrollbar
+      :native="false"
+      style="height: 100%;width: 100%">
+      <el-dialog
+        :visible.sync="dialogVisible"
+        width="1380px">
+        <noc-popuper></noc-popuper>
+        <i class="el-icon-error close" @click="dialogVisible=!dialogVisible"></i>
+      </el-dialog>
+    </el-scrollbar>
   </div>
 </template>
 
@@ -148,9 +152,13 @@
 
 import gameConfig from './home.config'
 import {createNamespacedHelpers} from 'vuex'
+import nocPopuper from '@/components/noc-popuper/nocPopuper'
 const { mapGetters: mapMemberGetters, mapActions: mapMemberAction } = createNamespacedHelpers('member')
 export default {
   name: 'index',
+  components: {
+    nocPopuper
+  },
   data () {
     const _config = gameConfig
     const _show = !this.$store.state.token
@@ -161,6 +169,9 @@ export default {
   },
   computed: {
     ...mapMemberGetters(['GAME_CATEGORIES'])
+  },
+  created () {
+    this.SET_GAME_CATEGORIES()
   },
   methods: {
     ...mapMemberAction(['SET_GAME_CATEGORIES']),
@@ -241,9 +252,12 @@ export default {
     }
   },
   beforeRouteEnter (to, from, next) {
-    next(vm => {
-      vm.SET_GAME_CATEGORIES()
-    })
+    // // console.log(`step5: beforeRouteEnter...`)
+    // next(vm => {
+    //   // console.log(`step6: before SET_GAME_CATEGORIES`, vm.$store.state.superIDS.shareholderId, vm.$store.state.superIDS.merchantId)
+    //   vm.SET_GAME_CATEGORIES()
+    // })
+    next()
   }
 }
 </script>
@@ -274,11 +288,11 @@ export default {
     vertical-align: bottom;
   }
   .close{
-    font-size: 28px;
+    font-size: 40px;
     color: #fff;
     position: absolute;
-    bottom: -50px;
-    left: calc(50% - 14px);
+    top: 0;
+    right:  - 64px;
   }
   .wrapper {
     section.home-content {

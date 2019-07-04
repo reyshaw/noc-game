@@ -127,25 +127,25 @@ export default {
       if (a) {
         this.activeIndex1 = i
         this.form.object = item // 拿到目标账户
-        console.log(this.form)
+        // console.log(this.form)
       } else {
         this.activeIndex = i
         this.form.reference = item // 拿到来源账户
-        console.log(this.form)
+        // console.log(this.form)
       }
     },
     getPlatform () {
       this.get(PATH_GAMEPLATFORM_PAY, {}).then(res => { // 查询所有平台列表
+        // console.log(111, res)
         res.data.map(obj => {
           this.referencePlatform.push(obj)
         })
-        console.log(this.referencePlatform)
+        // console.log(this.referencePlatform)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     getBalance (item, i, ind) {
-      console.log(item)
       let path = ''
       let payload = {}
       if (i === 0) {
@@ -159,18 +159,19 @@ export default {
       }
       this.isloading[i] = true // 刷新按钮选择开始
       this.$set(this.referencePlatform[i], 'status', '正在加载中') // 状态提示开始
-      console.log(this.referencePlatform)
       this.post(path, payload).then(res => {
         this.$set(this.isloading, i, false) // 刷新按钮选择结束
         this.$set(this.referencePlatform[i], 'status', '') // 状态提示开始
         this.$set(this.amountStatus, i, true) // 刷新按钮选择结束
         if (i === 0) { // 判断是否是钱包余额还是平台余额
+          // console.log(1, res)
           this.$set(this.referencePlatform[i], 'amount', parseFloat(res.data.amount).toFixed(2))
         } else {
           this.$set(this.referencePlatform[i], 'amount', parseFloat(res.data).toFixed(2))
+          // console.log(res)
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     handleTransfer () {
@@ -222,9 +223,9 @@ export default {
       }
     },
     sendPost (payload, path) {
-      console.log(payload, path)
+      // console.log(payload, path)
       this.post(path, payload).then(res => {
-        if (res.code === 1) {
+        if (res.status) {
           this.$message('恭喜您转额成功')
           this.referencePlatform.map(obj => {
             if (obj.id === this.form.reference.id) {
@@ -236,7 +237,7 @@ export default {
           })
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     }
   }

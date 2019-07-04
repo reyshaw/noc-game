@@ -71,14 +71,13 @@ export default {
       },
       dialogFormVisible: false,
       extraData: {
-        timeType: 0, // 投注时间， 派彩时间
-        winloseresult: '' // 5表示待结算的
+        type: 1 // 0=筹码, 1=优惠卷
       },
       timeZone: undefined
     }
   },
   created () {
-    this.fetchList('', 1)
+    this.fetchList('')
   },
   methods: {
     filterHandler (value, row) {
@@ -88,7 +87,7 @@ export default {
       if (type === 'cancel') {
         this.dialogFormVisible = false
       } else {
-        console.log(type, arguments[1][0])
+        // console.log(type, arguments[1][0])
       }
     }
   }

@@ -16,8 +16,8 @@ export default {
     {label: '我要存款', route: 'deposit'},
     {label: '我要取款', route: 'withdrawal'}],
   agent_shortCut: [
-    {label: '团队管理', route: 'memberCenter'},
-    {label: '我的消息', route: 'notices'},
-    {label: '我要取款', route: 'balanceTransfer'},
+    {label: '团队管理', route: 'agent_management'},
+    {label: '我的消息', route: 'agent_notices'},
+    {label: '我要取款', route: 'agent_withdrawal'},
     {label: '我的佣金', route: 'withdrawal'}]
 }

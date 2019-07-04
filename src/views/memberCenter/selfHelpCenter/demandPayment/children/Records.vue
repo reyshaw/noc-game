@@ -19,7 +19,29 @@
     </filter-condition>
     <!--主要内容-->
     <main>
-      <el-scrollbar :native="false">
+      <el-scrollbar :native="false"> <!-- style="height: 520px;"-->
+        <el-table
+          :data="tableData"
+          border
+          v-loading="loading">
+          <el-table-column prop="describe" label="序号"></el-table-column>
+          <el-table-column prop="time" label="存款姓名"></el-table-column>
+          <el-table-column prop="time" label="订单号"></el-table-column>
+          <el-table-column prop="time" label="昵称"></el-table-column>
+          <el-table-column
+            prop="type"
+            label="全部状态"
+            :filters="CONFIG.STATUS"
+            :filter-method="filterHandler"
+          ></el-table-column>
+          <el-table-column prop="audit" label="存款时间"></el-table-column>
+          <el-table-column prop="operate" label="存款金额"></el-table-column>
+          <el-table-column prop="operate" label="创建时间"></el-table-column>
+          <el-table-column prop="operate" label="更新时间"></el-table-column>
+          <el-table-column prop="operate" label="备注"></el-table-column>
+        </el-table>
+      </el-scrollbar>
+      <!--<el-scrollbar :native="false">
         <table class="table-record">
           <thead>
           <tr>
@@ -36,11 +58,11 @@
             <td>{{item.lotteryType}}</td>
             <td>{{item.lotteryTitle}}</td>
             <td>{{item.status}}</td>
-            <td>--</td>
+            <td>&#45;&#45;</td>
           </tr>
           </tbody>
         </table>
-      </el-scrollbar>
+      </el-scrollbar>-->
     </main>
     <!--分页-->
     <pagination
@@ -68,10 +90,10 @@ export default {
     return {
       CONFIG: {
         STATUS: [
-          {value: 0, label: '全部状态'},
-          {value: 1, label: '待领取'},
-          {value: 2, label: '已领取'},
-          {value: 3, label: '已失效'}
+          {value: 0, label: '全部状态', text: '全部状态'},
+          {value: 1, label: '待领取', text: '待领取'},
+          {value: 2, label: '已领取', text: '已领取'},
+          {value: 3, label: '已失效', text: '已失效'}
         ]
       }
     }
@@ -92,8 +114,11 @@ export default {
         this.total = res.data.total
       }, err => {
         this.loading = false
-        console.log(err)
+        this.$message.error(err)
       })
+    },
+    filterHandler (value, row) {
+      return row.tag === value
     }
   }
 }

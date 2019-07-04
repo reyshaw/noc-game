@@ -58,18 +58,18 @@ export default {
         this.sameBankCardNum = res.data[0].bankcardBindingSameQuantity // 相同银行最大银行卡总数
         this.samePeopleStatus = res.data[0].sameBankcardStatus // 是否可以同名
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     getCardList () {
-      this.post(PATH_CARDLIST_PAY).then(res => {
-        if (res) {
+      this.get(PATH_CARDLIST_PAY, {}).then(res => {
+        if (res.status) {
           this.bankCardList = res.data.list
         } else {
           this.bankCardList = []
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     addBankCard () {
@@ -93,7 +93,7 @@ export default {
         cancelButtonText: '放弃解绑'
       }).then(() => {
         this.post(PATH_BANKCARD_UNBINDCARDS, {cardId: cardId}).then(res => {
-          if (res.code === 1) {
+          if (res.status) {
             this.$message({
               type: 'success',
               message: '解绑成功'
@@ -105,7 +105,7 @@ export default {
           }
           this.getCardList()
         }, err => {
-          console.log(err)
+          this.$message.error(err)
         })
       }).catch(action => {
         this.$message({
@@ -122,7 +122,7 @@ export default {
         setDefault: 1
       }
       this.post(PATH_BANKCARD_SETDEFAULT, payload).then(res => {
-        if (res.code === 1) {
+        if (res.status) {
           this.$message({
             type: 'success',
             message: '恭喜您设置默认银行卡成功'
@@ -134,7 +134,7 @@ export default {
           })
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     }
   }

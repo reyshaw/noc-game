@@ -85,12 +85,12 @@ export default {
         gameprovider: p
       }
       this.post(PATH_SELECTWATER_CLIENT, payload).then(res => {
-        console.log(res)
+        // console.log(res)
         this.totalBet = parseFloat(res.data.validbetTotal).toFixed(2)
         this.totalReturn = parseFloat(res.data.backwaterAmount).toFixed(2)
         this.returnList = res.data.eachGameTotals
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     getReturn (p, c) {
@@ -99,9 +99,9 @@ export default {
         gamecategory: c
       }
       this.post(PATH_GETWATER_CLIENT, payload).then(res => {
-        console.log(res)
+        // console.log(res)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     }
   }

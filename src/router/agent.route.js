@@ -13,6 +13,7 @@ export default { path: '/agent', // 首页
       '/commissionPlan', // 佣金方案
       '/commissionPay' // 佣金支付
     ], ['home/', 'agent_'], __import),
+    { path: 'register', name: 'agentRegister', component: _import('auth/Register') }, // 注册
     { path: 'agentCenter', // 代理中心
       name: 'agent_agentCenter',
       component: _import('memberCenter/MemberCenter'),

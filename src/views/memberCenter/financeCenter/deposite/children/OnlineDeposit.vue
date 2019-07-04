@@ -55,29 +55,30 @@ export default {
           this.bankList.push(obj1)
         })
       })
+      this.currentBank = this.bankList[0]
     },
     handleSelect (i) {
       this.active = i
       this.currentBank = this.bankList[i]
     },
-    handleDeposit (acounmt) { // 点击存款
+    handleDeposit (form) { // 点击存款
       if (this.currentBank.payId) {
-        if (acounmt) {
+        if (form.amount) {
           let payload = {
-            acounmt,
+            acounmt: form.amount,
             payId: this.currentBank.payId,
             terminalType: 0,
             userType: 1,
-            bankCode: this.currentBank.bankCode
+            bankCode: this.currentBank.bankCode,
+            investAmount: form.offerAmount
           }
           const newTab = window.open()
           this.post(PATH_ONLINEBANKING_PAY, payload).then(res => {
-            if (res.code === 1) {
+            if (res.status) {
               if (res.data.type === 1) {
                 if (res.data) {
                   const div = document.createElement('div')
                   div.innerHTML = res.data.data // html code
-                  console.log(res.data.data)
                   newTab.document.body.appendChild(div)
                   newTab.document.forms.actform.submit()
                 }
@@ -90,7 +91,7 @@ export default {
               this.$message(res.msg)
             }
           }, err => {
-            console.log(err)
+            this.$message.error(err)
           })
         } else {
           this.$message('请输入存款金额')

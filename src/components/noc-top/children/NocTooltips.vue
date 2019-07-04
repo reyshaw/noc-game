@@ -16,42 +16,45 @@
     <div class="homeLogin" v-if="!TOKEN">
       <div><input type="text" v-model="memberAccount" placeholder="会员账号"><span class="forgetPwd" @click="showNotice">忘记?</span></div>
       <div><input type="password" v-model="memberPassword" placeholder="登录密码"><span class="forgetPwd" @click="showNotice">忘记?</span></div>
-      <div class="verifyCode" v-if="USER_CONFIG.showVerify">
+      <div class="verifyCode" v-if="!USER_CONFIG.verifyCodeShowStatus">
         <input type="text" ref="verifyInput" v-model="verifyCode" @blur="ifFocus = false" @focus="focus" v-focus="ifFocus" placeholder="请输入验证码">
         <div class="verifyCodeImg"><img :src="imgUrl" alt="验证码" @click="updateImgUrl"></div>
       </div>
       <button @click="loginNow">立即登录</button>
-      <button @click="jumpTo('register')">免费注册</button>
+      <button @click="jumpTo(`${ROLE}Register`)">免费注册</button>
     </div>
     <div class="memberDetails" v-if="TOKEN">
       <ul>
-        <!--<li>{{memberInfo.memberRealName}}</li>--> <!--memberAccount-->
+        <li>{{BASE_INFO.memberRealName}}</li>
         <li v-for="(shortcut, idx) in shortcuts" :key="idx">
           <a href="javascript:void(0);" @click="jumpTo(`${shortcut.route}`)">{{shortcut.label}}
-            <span class="badge" v-if="shortcut.label==='我的消息'">{{20}}</span>
+            <span class="badge" v-if="shortcut.label==='我的消息' && BASE_INFO.totalSystemMsg">{{GET_MSG_COUNT.totalSystemMsg}}</span>
           </a>
         </li>
         <li>
           <el-popover
             placement="bottom"
-            width="400"
+            width="420"
             trigger="hover">
             <div class="walletPanel">
               <div class="balance">
-                <div>现金余额：{{this.cash}}</div>
+                <div>账户总余额：{{this.cash}}</div>
                 <div>优惠余额：{{this.discount}}</div>
                 <div>积分余额：{{this.points}}</div>
               </div>
-              <div class="recycle"><span>一键回收</span><i class="iconfont iconhuishou"></i></div>
               <div class="platformList">
                 <div class="platform" v-for="(item, index) in platformList" :key="index">
                   <span>{{item.cnName}}：<a href="javascript: void(0);" ref="balance" @click="loadBalance(item,index)">点击查看</a></span>
-                  <i class="el-icon-refresh" @click="loadBalance(item,index)"></i>
-                  <i class="iconfont iconhuishou"></i>
+                  <i class="el-icon-refresh" :class="{balanceLoading: loading[index]}" @click="loadBalance(item,index)"></i>
+                  <i class="iconfont iconhuishou1" :class="{receive: loading1[index]}" @click="handleReceive(item, index)"></i>
                 </div>
               </div>
+              <div class="recycle">
+                <el-button size="mini" type="primary" :loading="recoveryLoading" @click="handleRecovery">一键回收</el-button>
+                <el-button class="el-icon-refresh" size="mini" @click="loadAllBalance">一键刷新</el-button>
+              </div>
             </div>
-            <a slot="reference" href="javascript:void(0);" @mouseover="getPlatform">我的钱包<i class="el-icon-caret-bottom"></i></a>
+            <a slot="reference" href="javascript:void(0);" @mouseover="getPlatform">{{ROLE==='member' ? '我的钱包' : '我的佣金'}}<i class="el-icon-caret-bottom"></i></a>
           </el-popover>
         </li>
         <li><a href="javascript:void(0);" @click="logOut">退出</a></li>
@@ -69,7 +72,8 @@ import {
 import {
   PATH_GAMEPLATFORM_PAY,
   PATH_BALANCE_PAY,
-  PATH_WALLATBALANCE_PAY
+  PATH_WALLATBALANCE_PAY,
+  PATH_RECOVERY_PAY
 } from '@/service/member/member_center.url.js'
 import {getUUID} from '@/assets/scripts/utils'
 import { mapGetters, mapMutations, mapActions } from 'vuex'
@@ -83,8 +87,8 @@ export default {
   data () {
     return {
       ifFocus: false, // 是否聚焦
-      memberAccount: 'double1', // 设置默认
-      memberPassword: '123123', // 默认密码
+      memberAccount: 'dl003', // 设置默认
+      memberPassword: '123456', // 默认密码
       verifyCode: '',
       imgUrl: '',
       headers: {
@@ -96,11 +100,14 @@ export default {
       discount: '0.00',
       points: '0.00',
       platformList: [],
-      oneTime: false
+      oneTime: false,
+      loading: [],
+      recoveryLoading: false,
+      loading1: []
     }
   },
   computed: {
-    ...mapGetters(['TOKEN', 'memberInfo', 'ROLE']), // 'GET_MSG_COUNT'
+    ...mapGetters(['TOKEN', 'BASE_INFO', 'ROLE', 'GET_MSG_COUNT']), // 'GET_MSG_COUNT'
     ...mapGetters({
       USER_CONFIG: 'CONFIG'
     }),
@@ -109,39 +116,40 @@ export default {
     }
   },
   created () {
-    this.updateImgUrl()
     this.getVerifyCode()
   },
   methods: {
     ...mapActions(['SET_LOGIN', 'SET_LOGOUT', 'SET_CONFIG']),
     ...mapMutations(['SET_LOADING']),
-    async getVerifyCode () { // 1 获取验证码配置项
-      // await this.SET_CONFIG()
-      // if (this.USER_CONFIG.showVerify) { // 是否显示验证码 &&  // 显示哪种种验证码 0-7
-      //   switch (this.USER_CONFIG.verifyType) {
-      //     case '0': // 字母验证码
-      //     case '1': // 文字验证码
-      //     case '2': // 数字计算验证码
-      //       this.updateImgUrl()
-      //       break
-      //     default:
-      //       break
-      //   }
-      // } else {
-      //   this.imgUrl = ''
-      // }
+    getVerifyCode () { // 1 获取验证码配置项
+      if (!this.USER_CONFIG.verifyCodeShowStatus) { // 是否显示验证码 &&  // 显示哪种种验证码 0-7
+        switch (this.USER_CONFIG.verifyCodeMode) {
+          case 0: // 字母验证码
+          case 1: // 文字验证码
+          case 2: // 数字计算验证码
+            this.updateImgUrl()
+            break
+          default:
+            this.updateImgUrl()
+            break
+        }
+      } else {
+        this.imgUrl = ''
+      }
     },
     focus (e) {
       e.currentTarget.select()
     },
     updateImgUrl () { // 3.1 图像验证码
+      // // console.log(1111111)
       this.ifFocus = true
       this.imgUrl = ''
       this.headers = {
         randomlogin: getUUID(),
         timestamp: new Date().getTime() + '' + Math.floor(Math.random() * 10000 * Math.random() * 10) // 可以封装函数, 无限随机
       }
-      this.imgUrl = PATH_VERIFYCODE_IMAGE + '?type=char' + '&randomlogin=' + this.headers.randomlogin + '&timestamp=' + this.headers.timestamp + '&verifyType=' + (this.ROLE === 0 ? '1' : 3)
+      this.imgUrl = PATH_VERIFYCODE_IMAGE + '?type=char' + '&randomlogin=' + this.headers.randomlogin + '&timestamp=' + this.headers.timestamp + '&verifyType=' + (this.ROLE === 'agent' ? 1 : 3)
+      // // console.log(this.imgUrl)
     },
     showNotice () { // 4 忘记密码联系客服弹窗
       this.$alert('将根据您提供的信息核对无异后提供账号', '请联系在线客服', {
@@ -184,7 +192,7 @@ export default {
           this.platformList = res.data
           this.oneTime = true
         }, err => {
-          console.log(err)
+          this.$message.error(err)
         })
       }
       this.post(PATH_WALLATBALANCE_PAY, {}).then(res => {
@@ -192,7 +200,7 @@ export default {
         this.discount = parseFloat(res.data.giveTotal).toFixed(2)
         this.points = parseFloat(res.data.integralTotal).toFixed(2)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     loadBalance (item, i) { // 6.2 用户各平台账户余额panel余额加载
@@ -200,21 +208,70 @@ export default {
         toProviderCode: item.code,
         toProvidersId: item.id
       }
+      this.$set(this.loading, i, true) // 刷新按钮选择开始
       this.post(PATH_BALANCE_PAY, payload).then(res => {
+        this.$set(this.loading, i, false)
         this.platformList[i].platformBalance = res.data
         this.$refs.balance[i].innerHTML = parseFloat(res.data).toFixed(2)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
+      })
+    },
+    loadAllBalance () {
+      this.platformList.map((obj, index) => {
+        this.loadBalance(obj, index)
+      })
+    },
+    handleReceive (item, i) { // 单平台回收
+      // console.log(item)
+      const payload = {
+        providersId: item.id
+      }
+      const path = PATH_RECOVERY_PAY
+      this.$set(this.loading1, i, true) // 刷新按钮选择开始
+      this.get(path, payload).then(res => {
+        this.$set(this.loading1, i, false) // 刷新按钮选择开始
+        if (res.status) {
+          this.$message({
+            type: 'success',
+            message: '恭喜您回收成功'
+          })
+        }
+      }, err => {
+        this.$message.error(err)
+      })
+    },
+    handleRecovery () { // 一键回收
+      this.recoveryLoading = true
+      this.get(PATH_RECOVERY_PAY, {}).then(res => {
+        this.recoveryLoading = false
+        if (res.status) {
+          this.$message({
+            type: 'success',
+            message: '恭喜您回收成功'
+          })
+        } else {
+          this.$message({
+            type: 'success',
+            message: res.msg
+          })
+        }
+      }, err => {
+        this.$message.error(err)
+        this.recoveryLoading = false
+        this.$message({
+          type: 'danger',
+          message: '请求超时请重新请求'
+        })
       })
     },
     logOut () { // 7用户登出
       let self = this
       self.SET_LOGOUT().then((res) => {
-        console.log(res)
         self.$message.success('退出成功')
         setTimeout(function () {
-          const route = self.ROLE === 'member' ? 'index' : 'agent_index'
-          self.$router.push({name: route})
+          // console.log({path: `/${self.ROLE}/index`})
+          self.$router.push({path: `/${self.ROLE}/index`})
           self.updateImgUrl()
         }, 500)
       })
@@ -355,56 +412,66 @@ export default {
   }
   .el-popover{
     .walletPanel{
-      line-height: 28px;
+      background-color: #2B0630;
+      line-height: 30px;
       .balance{
         display: flex;
         justify-content: space-between;
-        border-bottom: 1px solid #999999;
-      }
-      .recycle{
-        border-bottom: 1px solid #999999;
-        text-align: right;
-        padding-right: 20px;
-        font-size: 20px;
-        i{
-          vertical-align: middle;
-          font-size: 20px;
+        padding: 10px 20px;
+        div{
+          color: white;
+          font-size: 13px;
         }
       }
+      .recycle{
+        background-color: #130413;
+        text-align: center;
+        padding: 10px 20px;
+      }
       .platformList{
+        background-color: #130413;
         display: flex;
         flex-wrap: wrap;
+        align-content: flex-start;
+        padding: 10px 20px;
+        min-height: 300px;
         .platform{
-          border-bottom: 1px dashed #999999;
-          width: calc(50% - 2px);
-          border-right: 1px dashed #999999;
-          border-left: 1px dashed #999999;
+          width: 50%;
           span{
             text-indent: 1em;
             display: inline-block;
             width: 73%;
-            border-right: 1px dashed #999999;
+            color: white;
+            a{
+              color: #D4A502;
+            }
           }
           i{
             cursor: pointer;
             vertical-align: baseline;
             font-size: 18px;
+            color: white;
+          }
+          i.balanceLoading{
+            animation: rotate 2s infinite;
+          }
+          i.receive{
+            color: yellow;
           }
         }
-        .platform:nth-child(2n){
-          border-right: none;
-        }
-        .platform:nth-child(2n-1){
-          border-left: none;
-          border-right: none;
-        }
-        .platform:nth-last-child(1){
-          border-bottom: none;
-        }
-        .platform:nth-last-child(2){
-          border-bottom: none;
-        }
       }
+    }
+  }
+
+  @keyframes rotate {
+    0% {
+      transform: rotate(0deg);
+    }
+    50% {
+      transform: rotate(180deg);
+    }
+    100% {
+      transform: rotate(360deg);
     }
   }
 </style>

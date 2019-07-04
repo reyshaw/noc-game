@@ -18,6 +18,7 @@ export default {
       'eSports', // 电子竞技
       'promotion' // 优惠活动
     ], [], _import),
+    { path: 'register', name: 'memberRegister', component: _import('auth/Register') }, // 注册
     { path: 'memberCenter', // 会员中心
       name: 'memberCenter',
       component: _import('memberCenter/MemberCenter'),
@@ -32,7 +33,7 @@ export default {
               'balanceTransfer/balanceTransfer', // 额度转换
               'deposite/deposit', // 存款专区
               'withdrawal/withdrawal', // 取款专区
-              '/FundRecord', // 资金记录
+              '/fundRecord', // 资金记录
               '/betRecord', // 投注记录
               '/promotionRecord', // 优惠记录
               '/drawVolumeRecord', // 抽奖记录

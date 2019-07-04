@@ -20,10 +20,8 @@ const TYPES = [
   'MSG_COUNT',
   'SET_MSG_COUNT',
   'SET_LOGIN',
-  'SET_LOGOUT'
-  // 'SHOWFORGETPWDDIA',
-  // 'SHOWLOGINDIA',
-  // 'MEMBERINFO'
+  'SET_LOGOUT',
+  'SET_LOGIN_INFO'
 ]
 
 export default arrayToObject(TYPES)

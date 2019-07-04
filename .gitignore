@@ -12,4 +12,5 @@ yarn-error.log*
 *.ntvs*
 *.njsproj
 *.sln
-git_bak/
+.git_bak/
+.git_*/

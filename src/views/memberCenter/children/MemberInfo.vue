@@ -34,9 +34,9 @@
             <i @click="getBalance" class="el-icon-refresh"></i>
           </div>
           <div class="balanceOperate">
-            <el-button size="small" @click="jumpTo('deposit')">存款</el-button>
-            <el-button size="small" @click="jumpTo('withdrawal')">取款</el-button>
-            <el-button size="small" @click="jumpTo('balanceTransfer')">额度转换</el-button>
+            <el-button size="small" @click="jumpTo('deposit', '存款专区')">存款</el-button>
+            <el-button size="small" @click="jumpTo('withdrawal', '取款专区')">取款</el-button>
+            <el-button size="small" @click="jumpTo('balanceTransfer', '额度转换')">额度转换</el-button>
           </div>
         </div>
       </el-col>
@@ -48,21 +48,21 @@
           </div>
           <ul class="otherBalance">
             <li>
-              <span>优惠余额：{{this.memberBalance.giveTotal||0|formatMoney}} 元</span>
+              <span>优惠余额：{{(this.memberBalance.backwaterTotal + this.memberBalance.giveTotal + this.memberBalance.otherTotal)||0|formatMoney}} 元</span>
               <el-dropdown @command="handleCommand" trigger="click" placement="bottom-end">
                 <el-button size="small" class="el-dropdown-link">
                   使用
                 </el-button>
 <!--                // 1 现金金额 2 返水金额 3活动金额 4红包金额 5 筹码 6 其他金额 7 积分金额 8 账户余额 9 抽奖优惠卷 10 存款优惠卷-->
                 <el-dropdown-menu slot="dropdown">
-                  <el-dropdown-item :command="2">返水福利 0.00 元</el-dropdown-item>
-                  <el-dropdown-item :command="3">优惠活动 0.00 元</el-dropdown-item>
-                  <el-dropdown-item :command="6">其他优惠 0.00 元</el-dropdown-item>
+                  <el-dropdown-item :command="2">返水福利 {{this.memberBalance.backwaterTotal||0|formatMoney}} 元</el-dropdown-item>
+                  <el-dropdown-item :command="3">优惠活动 {{this.memberBalance.giveTotal||0|formatMoney}} 元</el-dropdown-item>
+                  <el-dropdown-item :command="6">其他优惠 {{this.memberBalance.otherTotal||0|formatMoney}} 元</el-dropdown-item>
                 </el-dropdown-menu>
               </el-dropdown>
             </li>
             <li>
-              <span>积分余额：{{this.memberBalance.amount||0|formatMoney}} 元</span>
+              <span>积分余额：{{this.memberBalance.integralTotal||0|formatMoney}} 元</span>
               <el-button size="small" @click="handleCommand(7)">兑换</el-button>
             </li>
             <li>
@@ -84,13 +84,13 @@
           </div>
           <ul class="chip">
             <li class="chipImg"></li>
-            <li>额度：{{this.memberBalance.chipTotal||0|formatMoney}}</li>
-            <li><el-button size="small" @click="jumpTo('chips')">使用</el-button></li>
+            <li>共：{{this.memberBalance.chipTotal}} 个</li>
+            <li><el-button size="small" @click="jumpTo('chips', '游戏筹码')">使用</el-button></li>
           </ul>
           <ul class="coupon">
             <li class="couponImg"></li>
-            <li>共：999张</li>
-            <li><el-button size="small" @click="jumpTo('promotionCode')">使用</el-button></li>
+            <li>共：{{this.memberBalance.couponTotal}} 张</li>
+            <li><el-button size="small" @click="jumpTo('promotionCode', '优惠券')">使用</el-button></li>
           </ul>
         </div>
       </el-col>
@@ -122,7 +122,7 @@ import {
   PATH_GETOFFER_CLIENT,
   PATH_WALLATTOTRANSFOR_PAY
 } from '@/service/member/member_center.url'
-import { mapState } from 'vuex'
+import { mapState, mapMutations } from 'vuex'
 export default {
   name: 'member_info',
   components: {
@@ -169,11 +169,12 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['SET_TAB_TITLE']),
     getBalance () { // 获取所有优惠活动钱包余额
       this.loading = true
       this.post(PATH_WALLATBALANCE_PAY, {}).then(res => {
         this.loading = false
-        if (res) {
+        if (res.status) {
           this.memberBalance = res.data
         } else {
           this.$message({
@@ -182,10 +183,11 @@ export default {
           })
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
-    jumpTo (path) {
+    jumpTo (path, title) {
+      this.SET_TAB_TITLE(title)
       this.$router.push({
         name: path
       })
@@ -199,23 +201,28 @@ export default {
         account: '',
         amount: ''
       }
-      console.log(command)
+      // console.log(command)
       this.offerType = command
       this.getOfferBalance()
     },
     getOfferBalance () { // 获取单独某个钱包的具体余额
       this.get(PATH_GETOFFER_CLIENT, {type: this.offerType}).then(res => {
-        if (res && res.code === 1) {
+        if (res.status) {
           this.dialogVisible = true
           this.codeList = res.data
+        } else {
+          this.$message({
+            type: 'warning',
+            message: '暂无可用优惠'
+          })
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     handleGetOffer () { // 领取优惠金额
       let sourceId
-      console.log(this.codeList)
+      // console.log(this.codeList)
       if (this.offerType !== 1 && this.offerType !== 7) {
         sourceId = this.codeList.filter(obj => obj.multiples === this.form.promoteType)[0].multipleBalanceId
       } else {
@@ -229,8 +236,8 @@ export default {
         walletType: this.offerType
       }
       this.post(PATH_WALLATTOTRANSFOR_PAY, payload).then(res => {
-        if (res) {
-          if (res.code === 1) {
+        if (res.status) {
+          if (res.status) {
             this.$message({
               type: 'success',
               message: '恭喜您，转额成功'
@@ -248,7 +255,7 @@ export default {
           })
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     openForm () {

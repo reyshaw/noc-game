@@ -114,7 +114,7 @@ export default {
       if (type === 'cancel') {
         this.dialogFormVisible = false
       } else {
-        console.log(type, arguments[1][0])
+        // console.log(type, arguments[1][0])
       }
     }
   }

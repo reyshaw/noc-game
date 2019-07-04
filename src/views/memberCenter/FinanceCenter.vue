@@ -6,11 +6,7 @@
 
 <script>
 export default {
-  name: 'finance_center',
-  beforeRouteUpdate (to, from, next) {
-    // console.log(to)
-    next()
-  }
+  name: 'finance_center'
 }
 </script>
 

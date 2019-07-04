@@ -38,9 +38,11 @@ export default {
     const _route = this.$route.name
     return {
       sideMenu: _menu,
-      route: _route
+      route: _route,
+      superRoute: this.proute
     }
   },
+  props: ['proute'],
   computed: mapGetters(['TAB_TITLE', 'ROLE']),
   methods: {
     ...mapMutations(['SET_TAB_TITLE']),
@@ -51,6 +53,10 @@ export default {
         name: route
       })
     }
+  },
+  updated () {
+    this.superRoute = this.proute
+    this.route = this.superRoute
   }
 }
 </script>

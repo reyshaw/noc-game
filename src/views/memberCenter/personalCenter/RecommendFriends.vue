@@ -143,7 +143,8 @@ export default {
         inviteCode: '',
         inviteLink: ''
       },
-      ruleList: []
+      ruleList: [],
+      isFetching: false
     }
   },
   created () {
@@ -165,19 +166,22 @@ export default {
       alert(`跳到具体的活动页面, 具体的页面还还有!`)
     },
     getReward (item, index) { // 领取奖励
+      if (this.isFetching) {
+        return
+      }
       if (Number(item.applyStatus) === 2) {
         this.$message.error('已领取过，请勿重复领取')
       } else if (Number(item.applyStatus) === 0) {
         this.$message.warning('尚未达到条件')
       } else {
+        this.isFetching = true
         this.post(PATH_REWORD_GET, {pmcId: item.pmcId, conditionId: item.conditionId}).then(res => {
+          this.isFetching = false
           if (index || index === 0) {
             this.$message.success('领取成功')
             this.ruleList[index]['applyStatus'] = 2
-          } else {
-            if (res.code === 6068) {
-              this.$message.success(res.msg)
-            } else {
+          } else { // 一键领取
+            if (res.status) {
               this.$message.success('全部领取成功')
               this.ruleList.forEach(item => {
                 if (item.applyStatus === 1) {
@@ -187,7 +191,8 @@ export default {
             }
           }
         }, err => {
-          console.log(err)
+          this.isFetching = false
+          this.$message.error(err)
         })
       }
     }

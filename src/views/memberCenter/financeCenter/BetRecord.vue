@@ -37,7 +37,7 @@
     <!--主要内容-->
     <header class="intotal">
       <ul>
-        <li>总共： 2笔</li>
+        <li>总共： {{this.tableData.length}}笔</li>
         <li>投注额： ￥0.00元</li>
         <li>有效投注额： ￥0.00元</li>
         <li>派彩： ￥0.00元</li>
@@ -50,7 +50,7 @@
           :data="tableData"
           border
           v-loading="loading">
-          <el-table-column prop="gamecategory" label="游戏类型"></el-table-column>
+          <el-table-column prop="gameprovider" label="游戏类型"></el-table-column>
           <el-table-column prop="gamename" label="游戏名称"></el-table-column>
           <el-table-column prop="bettingcode" label="注单号"></el-table-column>
           <el-table-column prop="bettingdate" label="投注时间"></el-table-column>
@@ -58,7 +58,19 @@
           <el-table-column prop="bettingamount" label="投注额"></el-table-column>
           <el-table-column prop="validbet" label="有效投注额"></el-table-column>
           <el-table-column prop="winloseamount" label="派彩"></el-table-column>
-          <el-table-column prop="winloseresult" label="类型"></el-table-column>
+          <el-table-column prop="winloseresult" label="类型">
+            <template slot="header" slot-scope="scope">
+              <el-select v-model="extraData.winloseresult" placeholder="请选择" size="mini" key="type2">
+                <el-option label="全部类型" value=""></el-option>
+                <el-option
+                  v-for="(type, index) in CONFIG.TYPE"
+                  :key="index*2"
+                  :label="type.label"
+                  :value="type.value">
+                </el-option>
+              </el-select>
+            </template>
+          </el-table-column>
         </el-table>
       </el-scrollbar>
     </main>
@@ -123,7 +135,7 @@ export default {
       if (type === 'cancel') {
         this.dialogFormVisible = false
       } else {
-        console.log(type, arguments[1][0])
+        // console.log(type, arguments[1][0])
       }
     }
   }

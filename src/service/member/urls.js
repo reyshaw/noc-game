@@ -34,4 +34,4 @@ export const PATH_INDEX_GAME = OGWLS_GAME_API + '/member/game/index-game-provide
 export const PATH_ACTI_LIST = OGWLS_USER_CLIENT + '/queryPromotionActivityList'
 
 /** 轮询 **/
-export const PATH_POLLING = OGWLS_USER_CLIENT + '/queryCommonInfo'
+export const PATH_POLLING = OGWLS_USER_CLIENT + '/memberNotifacations'

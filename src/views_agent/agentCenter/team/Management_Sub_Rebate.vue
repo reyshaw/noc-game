@@ -491,7 +491,7 @@ export default {
     }
   },
   created () {
-    console.log(111)
+    // console.log(111)
   },
   methods: {
     addItems () {
@@ -503,7 +503,7 @@ export default {
       }
     },
     handleChange (value) {
-      console.log(value)
+      // console.log(value)
     },
     choose () {
       this.$emit('showInner')

@@ -60,7 +60,7 @@
                 <el-col :span="24"><span class="normalFont context">{{scope.row.releaseTime}}</span></el-col>
               </el-row>
               <el-row type="flex" justify="end">
-                <el-col :span="8"><i class="el-icon-delete delIcon" @click.stop="delMsg(scope)" style="font-size: 18px;text-align: left"></i></el-col>
+                <el-col :span="8"><i class="el-icon-delete delIcon" @click.stop="delMsg(scope)" style="font-size: 18px;text-align: left; position: relative; top: -8px;"></i></el-col>
               </el-row>
             </template>
           </el-table-column>
@@ -71,12 +71,12 @@
           :total="total">
           <ul>
             <!--<li><input type="checkbox" style="margin-left: -6px;width: 16px;height: 16px;border-color: #5a6576;"></li>-->
-            <li>
+            <!--<li>
               <el-select v-model="batch_status" placeholder="批量操作" size="mini">
                 <el-option v-for="(item, index) in CONFIG.BATCHSTATUS" :key="index" :label="item.label" :value="item.value"></el-option>
               </el-select>
             </li>
-            <li><el-button size="mini" @click="onBatch">确定</el-button></li>
+            <li><el-button size="mini" @click="onBatch">确定</el-button></li>-->
           </ul>
         </pagination>
       </el-main>
@@ -144,7 +144,10 @@ export default {
     clickTable (row, column, e) { // 阅读
       if (row.readStatus === 0) {
         this.post(this.readUrl, {id: row.id, ids: row.id}).then(resolve => {
-          row.readStatus = false
+          if (resolve.status) {
+            this.$message.success('已阅读')
+            row.readStatus = false
+          }
         })
       }
       this.$refs.multipleTable.toggleRowExpansion(row)
@@ -158,9 +161,11 @@ export default {
     },
     delMsg (scope) { // 删除
       this.post(this.delUrl, {id: scope.row.id, ids: scope.row.id}).then(resolve => {
-        console.log(resolve)
-        this.tableData.splice(scope.row.index, 1)
-        this.total--
+        if (resolve.status) {
+          this.$message.success('删除成功!')
+          this.tableData.splice(scope.row.index, 1)
+          this.total--
+        }
       })
     },
     fetchList () {
@@ -168,7 +173,7 @@ export default {
         this.tableData = res.data.list
         this.total = res.data.total
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     }
   }

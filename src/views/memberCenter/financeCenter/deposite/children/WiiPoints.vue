@@ -46,14 +46,14 @@ export default {
             this.payList.push(obj1)
           })
         })
-        console.log(this.payList)
+        // console.log(this.payList)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     handleSelect (i) { // 选择支付渠道
       this.currentPay = this.payList[i]
-      console.log(this.currentPay)
+      // console.log(this.currentPay)
     },
     handleDeposit (acounmt) { // 点击支付
       let payload = {
@@ -64,22 +64,22 @@ export default {
       }
       const newTab = window.open()
       this.post(PATH_SCANPAY_PAY, payload).then(res => {
-        console.log(res)
-        if (res.code === 1) {
-          console.log(1)
+        // console.log(res)
+        if (res.status) {
+          // console.log(1)
           if (res.data.type === '1') {
-            console.log(2)
+            // console.log(2)
             if (res.data) {
               this.openLayer()
-              console.log(3)
+              // console.log(3)
               const div = document.createElement('div')
               div.innerHTML = res.data.data // html code
-              console.log(res.data.data)
+              // console.log(res.data.data)
               newTab.document.body.appendChild(div)
               newTab.document.forms.actform.submit()
             }
           } else if (res.data.type === '2') {
-            console.log(res.data.data)
+            // console.log(res.data.data)
             newTab.location.href = res.data.data
           }
         } else if (res.code === 500) {
@@ -90,7 +90,7 @@ export default {
           this.$message(res.msg)
         }
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     openLayer () {

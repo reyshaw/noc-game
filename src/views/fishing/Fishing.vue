@@ -38,7 +38,7 @@
         <div class="shark"></div>
         <div class="octopus"></div>
         <div class="saltedfish"></div>
-        <div class="fishCard" v-for="(item, index) in fishGame" :key="index">
+        <div class="fishCard" v-for="(item, index) in fishGame" :key="index" @mouseenter="cardBubbly(index)">
           <div class="title">
             <img :src="'http://172.16.135.103/ui/gfx_frontend/fishing_game/text_' + (index+1) + '.png'" alt="">
           </div>
@@ -50,12 +50,12 @@
           </div>
           <button class="start" @click="enterGame(3187, 0)" @mousedown="mousedown" @mouseup="mouseup">立即游戏</button>
           <div class="layer">
-<!--            <canvas width="200" ref="layer" height="400"></canvas>-->
+            <canvas width="200" ref="layer" height="400"></canvas>
           </div>
         </div>
       </div>
     </div>
-<!--    <canvas id="demo" width="1920" height="2437"></canvas>-->
+    <canvas id="demo" width="1920" height="2437"></canvas>
     <div class="fishbox">
       <div class="flowFish"></div>
     </div>
@@ -96,36 +96,36 @@ export default {
     this.getPlatformUrl('fish')
   },
   mounted () {
-    // this.bakBubbly()
+    this.bakBubbly()
   },
   methods: {
-    // cardBubbly (i) {
-    //   // console.log(this.$refs.layer[i])
-    //   window.bubbly({
-    //     canvas: this.$refs.layer[i],
-    //     blur: 30,
-    //     colorStart: 'transparent',
-    //     colorStop: 'transparent',
-    //     radiusFunc: () => 5 + Math.random() * 15,
-    //     angleFunc: () => -Math.PI / 2,
-    //     velocityFunc: () => Math.random() * 30,
-    //     bubbleFunc: () => `rgba(255, 255, 255, ${Math.random() * 0.2})`,
-    //     bubbles: 15
-    //   })
-    // },
-    // bakBubbly () {
-    //   window.bubbly({
-    //     canvas: document.getElementById('demo'),
-    //     blur: 15,
-    //     colorStart: 'transparent',
-    //     colorStop: 'transparent',
-    //     radiusFunc: () => 5 + Math.random() * 15,
-    //     angleFunc: () => -Math.PI / 2,
-    //     velocityFunc: () => Math.random() * 5,
-    //     bubbleFunc: () => `rgba(255, 255, 255, ${Math.random() * 0.2})`,
-    //     bubbles: 350
-    //   })
-    // },
+    cardBubbly (i) {
+      // // console.log(this.$refs.layer[i])
+      window.bubbly({
+        canvas: this.$refs.layer[i],
+        blur: 30,
+        colorStart: 'transparent',
+        colorStop: 'transparent',
+        radiusFunc: () => 5 + Math.random() * 15,
+        angleFunc: () => -Math.PI / 2,
+        velocityFunc: () => Math.random() * 30,
+        bubbleFunc: () => `rgba(255, 255, 255, ${Math.random() * 0.2})`,
+        bubbles: 15
+      })
+    },
+    bakBubbly () {
+      window.bubbly({
+        canvas: document.getElementById('demo'),
+        blur: 15,
+        colorStart: 'transparent',
+        colorStop: 'transparent',
+        radiusFunc: () => 5 + Math.random() * 15,
+        angleFunc: () => -Math.PI / 2,
+        velocityFunc: () => Math.random() * 5,
+        bubbleFunc: () => `rgba(255, 255, 255, ${Math.random() * 0.3})`,
+        bubbles: 30
+      })
+    },
     mousedown (e) {
       let _btn = e.target
       _btn.style.boxShadow = 'none'

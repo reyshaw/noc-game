@@ -22,7 +22,7 @@ const pageMix = {
   },
   methods: {
     fetchList (callback, methods) { // 获取数据,可以重写
-      // console.log(`pageMix: fetchList`)
+      // // console.log(`pageMix: fetchList`)
       if (this.timeZone) { // 有时间区间的
         this.payload.beginTime = formatDate(new Date(this.timeZone[0]))
         this.payload.endTime = formatDate(new Date(this.timeZone[1]))
@@ -36,7 +36,7 @@ const pageMix = {
           callback && callback(res.data)
         }, err => {
           this.loading = false
-          console.log(err)
+          this.$message.error(err)
         })
       } else {
         this.post(this.listURL, Object.assign({}, this.payload, this.extraData)).then(res => {
@@ -46,7 +46,7 @@ const pageMix = {
           callback && callback(res.data)
         }, err => {
           this.loading = false
-          console.log(err)
+          this.$message.error(err)
         })
       }
     },

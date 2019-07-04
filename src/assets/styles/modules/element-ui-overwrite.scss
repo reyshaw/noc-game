@@ -6,7 +6,7 @@
   display: none;
 }
 .el-dialog__body{
-  padding: 5px;
+  padding: 0;
 }
 .eld400 {
   .el-dialog {
@@ -142,4 +142,10 @@
 }
 .el-table th {
   padding: 2px 0;
+}
+
+/***slider样式重写***/
+.el-popover{
+  padding: 0;
+  border: 0;
 }

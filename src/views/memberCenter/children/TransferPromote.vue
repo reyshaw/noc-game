@@ -90,9 +90,9 @@ export default {
     getPlatform () { // 获取平台
       this.get(PATH_GAMEPLATFORM_PAY, {}).then(res => {
         this.platformList = res.data
-        console.log(this.platformList)
+        // console.log(this.platformList)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     handleChange (val) { // 换打码备注显示不同的余额

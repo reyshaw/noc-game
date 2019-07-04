@@ -23,28 +23,28 @@ const router = new Router({
     // return 期望滚动到哪个的位置
   }
 })
-
 const checkAuth = async function (to, from, next) { // 检查权限
   if (store.state.role !== to.path.split('/')[1] && to.path !== '/404') { // 说明角色改变了, to.path.split('/')[1]  agent member
     store.commit('SET_ROLE', store.state.role === 'member' ? 'agent' : 'member')
     if (store.state.token) { // 如果已经登录,则清空数据
-      const deleteConfig = true // 要删除配置
+      const deleteConfig = true // 删除配置
       await store.dispatch('SET_LOGOUT', deleteConfig)
       if (!whiteList.includes(to.path)) {
         router.push({name: store.state.role === 'member' ? 'index' : 'agent_index'})
       }
     }
-    const forceUpdate = true // 更新配置
+    const forceUpdate = true // 强制更新配置
     await store.dispatch('SET_CONFIG', forceUpdate)
+  } else { // 刷新
+    await store.dispatch('SET_CONFIG')
   }
   next()
 }
-
 router.beforeEach(async (to, from, next) => {
   if (!whiteList.includes(to.path) && !store.state.token) { // 不在白名单,又没有登录 /agent/agentCenter...
     Message.error('未登陆，请登录访问!')
     router.push({path: `/${to.path.split('/')[1]}/index`})
-  } else { // 在白名单
+  } else { // 在白名单 {登录了} / 不在白名单{未登录} ...
     await checkAuth(to, from, next)
   }
 })

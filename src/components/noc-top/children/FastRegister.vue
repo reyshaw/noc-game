@@ -23,11 +23,12 @@
         <el-button type="primary" class="submit">立即注册</el-button>
       </el-form-item>
     </el-form>
-    <div class="jumpToLogin"><a href="javascript: void(0);">已有账号，立即登录</a></div>
+    <div class="jumpToLogin"><a href="javascript: void(0);"  @click="jumpTo('login')">已有账号，立即登录</a></div>
   </div>
 </template>
 
 <script>
+import {mapMutations} from 'vuex'
 export default {
   name: 'fast_register',
   data () {
@@ -40,11 +41,12 @@ export default {
       }
     }
   },
-  props: {
-  },
-  created () {
-  },
   methods: {
+    ...mapMutations('member', ['SET_LOGIN_DIALOG']),
+    jumpTo (route) {
+      this.SET_LOGIN_DIALOG(true)
+      // this.$router.push('/member/login')
+    }
   }
 }
 </script>

@@ -9,7 +9,7 @@
         <div class="container">
           <div class="platformName">{{item.cnName}}</div>
           <div class="gameAmount">
-            <span :class="{gameBalance:true, orange:amountStatus[index]}" @click="getBalance(item, index, 1)">{{item.amount||'查看余额'}}</span>
+            <span :class="{gameBalance:true, orange:amountStatus[index]}" @click="getBalance(item, index, 1)">{{(isNaN(parseFloat(item.amount).toFixed(2)) ? 0 : parseFloat(item.amount).toFixed(2)) || '查看余额'}}</span>
             <span class="status">{{item.status ? item.status+'...' : ''}}</span>
           </div>
           <i @click="getBalance(item, index, 1)" :class="{iconfont:true, icongengxin1:true, balanceLoading:isloading[index]}"></i>
@@ -54,13 +54,13 @@ export default {
         res.data.map(obj => {
           this.referencePlatform.push(obj)
         })
-        console.log(this.referencePlatform)
+        // console.log(this.referencePlatform)
       }, err => {
-        console.log(err)
+        console.log(11)
+        this.$message.error(err)
       })
     },
     getBalance (item, i, ind) {
-      console.log(item)
       let path = ''
       let payload = {}
       if (i === 0) {
@@ -74,18 +74,17 @@ export default {
       }
       this.isloading[i] = true // 刷新按钮选择开始
       this.$set(this.referencePlatform[i], 'status', '正在加载中') // 状态提示开始
-      console.log(this.referencePlatform)
+      // console.log(this.referencePlatform)
       this.post(path, payload).then(res => {
+        console.log(res)
         this.$set(this.isloading, i, false) // 刷新按钮选择结束
         this.$set(this.referencePlatform[i], 'status', '') // 状态提示开始
         this.$set(this.amountStatus, i, true) // 刷新按钮选择结束
         if (i === 0) { // 判断是否是钱包余额还是平台余额
-          this.$set(this.referencePlatform[i], 'amount', parseFloat(res.data.amount).toFixed(2))
+          this.$set(this.referencePlatform[i], 'amount', res.data.amount)
         } else {
-          this.$set(this.referencePlatform[i], 'amount', parseFloat(res.data).toFixed(2))
+          this.$set(this.referencePlatform[i], 'amount', res.data)
         }
-      }, err => {
-        console.log(err)
       })
     }
   }

@@ -69,10 +69,10 @@ export default {
   methods: {
     handleCopy,
     onSearch () {
-      console.log(1111)
+      // console.log(1111)
     },
     onPrint () {
-      console.log(this.imgSize)
+      // console.log(this.imgSize)
     }
   }
 }

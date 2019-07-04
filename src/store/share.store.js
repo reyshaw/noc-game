@@ -1,11 +1,12 @@
 import types from './share.types'
-import {getPolling, getDefaultConfig, login, logout} from '@/service/api/share.api'
+import {getPolling, login, logout, getDefaultConfig} from '@/service/api/share.api'
 import {isObject, isEmptyObject} from '@/assets/scripts/utils'
-import {formatConfig} from './data.helper'
+// import {formatConfig} from './data.helper'
 // 轮询函数
 let _timeout = null
 function ajaxPolling (commit) {
   getPolling().then(res => {
+    // console.log(res)
     commit(types.SET_MSG_COUNT, res.data.totalUnreadMsgCount)
     _timeout = setTimeout(function () {
       ajaxPolling(commit)
@@ -22,8 +23,8 @@ const store = {
     token: null, // 2.是否登录 [null / token]
     role: 'member', // 3.系统角色 [member 会员 / agent 代理]
     superIDS: { // 4.上级
-      shareholderId: 56, // [股东id]
-      merchantId: 1038 // [商户id]
+      shareholderId: null, // [股东id]
+      merchantId: null // [商户id]
     },
     config: {}, // 5.配置项
     baseInfo: {}, // 6.角色基本信息
@@ -55,10 +56,13 @@ const store = {
         commit(types.SET_LOADING, false); throw new Error(err)
       })
       if (_user) {
-        commit(types.SET_TOKEN, _user.token)
-        commit(types.SET_BASE_INFO, _user.profile)
-        dispatch(types.SET_POLLING, true)
+        dispatch(types.SET_LOGIN_INFO, {token: _user.token, baseInfo: _user.profile || _user.agentProfile, startPolling: true})
       }
+    },
+    [types.SET_LOGIN_INFO]: ({commit, dispatch}, {token, baseInfo, startPolling}) => {
+      commit(types.SET_TOKEN, token)
+      commit(types.SET_BASE_INFO, baseInfo)
+      dispatch(types.SET_POLLING, startPolling)
     },
     [types.SET_LOGOUT]: async ({commit, dispatch}, deleteConfig) => { // 登出, 可以选择是否删除配置
       const _isDeleted = await logout().then(res => {
@@ -67,9 +71,7 @@ const store = {
         throw new Error(err)
       })
       if (_isDeleted) {
-        dispatch(types.SET_POLLING, false)
-        commit(types.SET_TOKEN, null)
-        commit(types.SET_BASE_INFO, {})
+        dispatch(types.SET_LOGIN_INFO, {token: null, baseInfo: {}, startPolling: false})
         if (deleteConfig) { commit(types.SET_CONFIG, {}) }
       }
     },
@@ -77,14 +79,12 @@ const store = {
       if (start) { ajaxPolling(commit) } else { clearInterval(_timeout) }
     },
     [types.SET_CONFIG]: async ({state, commit}, forceUpdate) => { // 传参表示要更新
-      if (isEmptyObject(state.config) || forceUpdate) {
+      if (isEmptyObject(state.config) || forceUpdate) { // 如果没有配置项就发请求
         const _config = await getDefaultConfig().then(res => {
-          if (res.status) { return formatConfig(res.data) }
+          if (res.status) { return res.data }
         }, err => { throw new Error(err) })
         commit(types.SET_CONFIG, _config)
-        if (!state.superIDS.shareholderId || !state.superIDS.merchantId) {
-          commit(types.SET_SUPER_IDS, {shareholderId: _config.shareholderId, merchantId: _config.merchantId})
-        }
+        commit(types.SET_SUPER_IDS, {shareholderId: _config.shareholderId, merchantId: _config.merchantId})
       }
     }
   },

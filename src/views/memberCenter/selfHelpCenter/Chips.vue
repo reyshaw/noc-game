@@ -16,11 +16,12 @@
           :data="tableData"
           border
           v-loading="loading">
-          <el-table-column prop="describe" label="面值额度"></el-table-column>
-          <el-table-column prop="time" label="到期时间"></el-table-column>
+          <el-table-column prop="lotteryTitle" label="活动名称"></el-table-column>
+          <el-table-column prop="lotteryTitle" label="面值额度"></el-table-column>
+          <el-table-column prop="expiredEndTime" label="到期时间"></el-table-column>
           <el-table-column
             prop="type"
-            label="类型"
+            label="全部类型"
             :filters="CONFIG.TYPE"
             :filter-method="filterHandler"
           ></el-table-column>
@@ -48,7 +49,7 @@
 import Pagination from '@/components/noc-pagination'
 import pickerMix from '@/mixins/picker.mix'
 import pageMix from '@/mixins/page.mix'
-import { PATH_GETCHIPRECORD_CLIENT } from '@/service/member/member_center.url'
+import { PATH_GETCOUPON_CLIENT } from '@/service/member/member_center.url'
 import GameTypeDialog from '@/views_agent/agentCenter/team/Reports_Comp_Dialog'
 export default {
   name: 'chips',
@@ -59,7 +60,7 @@ export default {
   },
   data () {
     return {
-      listURL: PATH_GETCHIPRECORD_CLIENT,
+      listURL: PATH_GETCOUPON_CLIENT,
       CONFIG: {
         TYPE: [
           {value: 0, text: '全部'},
@@ -68,12 +69,15 @@ export default {
           {value: 3, text: '已过期'}
         ]
       },
+      extraData: {
+        type: 0 // 0=筹码, 1=优惠卷
+      },
       dialogFormVisible: false,
       timeZone: undefined
     }
   },
   created () {
-    this.fetchList('', 1)
+    this.fetchList('')
   },
   methods: {
     filterHandler (value, row) {
@@ -83,7 +87,7 @@ export default {
       if (type === 'cancel') {
         this.dialogFormVisible = false
       } else {
-        console.log(type, arguments[1][0])
+        // console.log(type, arguments[1][0])
       }
     }
   }

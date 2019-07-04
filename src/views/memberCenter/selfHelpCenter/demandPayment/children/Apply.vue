@@ -44,14 +44,26 @@
               <el-input v-model="form.depositAmount" placeholder="请输入存款金额" size="mini" :style="inputStyle"></el-input>
             </el-form-item>
             <el-form-item label="上传截图">
-              <el-upload
+              <!-- <el-upload
                 class="upload-demo"
-                action="https://jsonplaceholder.typicode.com/posts/"
+                action="http://172.16.135.103:8081/manage/common/ftp/uploadFile"
                 multiple
                 :limit="1"
                 :file-list="fileList">
                 <el-button size="small" type="primary">点击上传</el-button>
                 <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过600kb</div>
+              </el-upload> -->
+              <el-upload
+                class="upload-demo"
+                action="123"
+                :http-request="upLoad"
+                :show-file-list="false"
+                :on-success="handleAvatarSuccess"
+                :before-upload="beforeAvatarUpload">
+                <el-button size="small" type="primary">点击上传</el-button>
+                <div slot="tip" class="el-upload__tip">只能上传jpg/png文件，且不超过600kb</div>
+                <!-- <img v-if="form.qrCodeUrl" :src="form.qrCodeUrl" class="avatar"> -->
+                <!-- <i v-else class="el-icon-plus avatar-uploader-icon"></i> -->
               </el-upload>
             </el-form-item>
             <el-form-item label="备注信息">
@@ -110,7 +122,35 @@ export default {
   },
   methods: {
     handleWithdraw () {
-      console.log(1)
+      // console.log(1)
+    },
+    upLoad (file) {
+      debugger
+      const formData = new FormData()
+      formData.append('file', file.file)
+      formData.append('type', 100)
+      this.post('/manage/common/ftp/uploadFile', formData, {
+        'Content-Type': 'multipart/form-data',
+        'request-Type': 'file/upload'
+      }).then(res => {
+        this.form.qrCodeUrl = res.data
+      })
+    },
+    handleAvatarSuccess (res, file) { // 上传成功的回调
+      // this.imageUrl = URL.createObjectURL(file.raw)
+      this.form.qrCodeUrl = res.data
+    },
+    beforeAvatarUpload (file) { // 过滤
+      /* const isJPG = file.type === 'image/jpeg'
+      const isLt2M = file.size / 1024 / 1024 < 2
+
+      if (!isJPG) {
+        this.$message.error('上传头像图片只能是 JPG 格式!')
+      }
+      if (!isLt2M) {
+        this.$message.error('上传头像图片大小不能超过 2MB!')
+      }
+      return isJPG && isLt2M */
     }
   }
 }

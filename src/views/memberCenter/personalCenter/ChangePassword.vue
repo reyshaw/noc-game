@@ -1,37 +1,47 @@
 <template>
   <div class="pwd-container">
-    <el-tabs type="card" @tab-click="onTabClick">
-      <el-tab-pane label="登录密码">
-        <div class="box" v-if="currentTabIndex === '0'">
-          <el-form :model="form" size="small" ref="validateForm" :label-width="formLabelWidth" :rules="rules">
-            <el-form-item prop="memberPassword" label="当前密码:">
-              <el-input size="small" type="password" v-model.trim="form.memberPassword" placeholder="请输入当前密码"></el-input>
-            </el-form-item>
-            <el-form-item prop="newMemberPassowrd" label="新设密码:">
-              <el-input size="small" type="password" placeholder="请填写新设密码" v-model.trim="form.newMemberPassowrd"></el-input>
-            </el-form-item>
-            <el-form-item prop="confirmNewMemberPassword" label="确认密码:">
-              <el-input size="small" type="password" placeholder="请填写确认密码" v-model.trim="form.confirmNewMemberPassword"></el-input>
-            </el-form-item>
-          </el-form>
-        </div>
+    <el-tabs type="card" v-model="currentTab">
+      <el-tab-pane label="登录密码" name="login">
+        <transition name="custom-classes-transition"
+                    mode="out-in"
+                    enter-active-class="animated fadeIn"
+                    leave-active-class="animated fadeOut">
+          <div class="box" v-if="currentTab === 'login'">
+            <el-form :model="form" size="small" ref="validateForm" :label-width="formLabelWidth" :rules="rules">
+              <el-form-item prop="memberPassword" label="当前密码:">
+                <el-input size="small" type="password" v-model.trim="form.memberPassword" placeholder="请输入登录密码"></el-input>
+              </el-form-item>
+              <el-form-item prop="newMemberPassowrd" label="新设密码:">
+                <el-input size="small" type="password" placeholder="请填写新设密码" v-model.trim="form.newMemberPassowrd"></el-input>
+              </el-form-item>
+              <el-form-item prop="confirmNewMemberPassword" label="确认密码:">
+                <el-input size="small" type="password" placeholder="请填写确认密码" v-model.trim="form.confirmNewMemberPassword"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </transition>
       </el-tab-pane>
-      <el-tab-pane label="取款密码">
-        <div class="box" v-if="currentTabIndex === '1'">
-          <el-form :model="form" size="small" ref="validateForm" :label-width="formLabelWidth" :rules="rules">
-            <el-form-item prop="withdrawalPassowrd" label="当前密码:" v-if="!claimPwdIsSet">
-              <el-input size="small" type="password" v-model.trim="form.withdrawalPassowrd" placeholder="请输入当前密码"></el-input>
-            </el-form-item>
-            <el-form-item prop="newWithdrawalPassowrd" label="新设密码:">
-              <el-input size="small" type="password" placeholder="请填写新设密码" v-model.trim="form.newWithdrawalPassowrd"></el-input>
-            </el-form-item>
-            <el-form-item prop="confirmWithdrawalPassword" label="确认密码:">
-              <el-input size="small" type="password" placeholder="请填写确认密码" v-model.trim="form.confirmWithdrawalPassword"></el-input>
-            </el-form-item>
-          </el-form>
-        </div>
+      <el-tab-pane label="取款密码" name="withdraw">
+        <transition name="custom-classes-transition"
+                    mode="out-in"
+                    enter-active-class="animated fadeIn"
+                    leave-active-class="animated fadeOut">
+          <div class="box" v-if="currentTab === 'withdraw'">
+            <el-form :model="form" size="small" ref="validateForm" :label-width="formLabelWidth" :rules="rules">
+              <el-form-item prop="withdrawalPassowrd" label="当前密码:" v-if="!claimPwdIsSet">
+                <el-input size="small" type="password" v-model.trim="form.withdrawalPassowrd" placeholder="请输入取款密码"></el-input>
+              </el-form-item>
+              <el-form-item prop="newWithdrawalPassowrd" label="新设密码:">
+                <el-input size="small" type="password" placeholder="请填写新设密码" v-model.trim="form.newWithdrawalPassowrd"></el-input>
+              </el-form-item>
+              <el-form-item prop="confirmWithdrawalPassword" label="确认密码:">
+                <el-input size="small" type="password" placeholder="请填写确认密码" v-model.trim="form.confirmWithdrawalPassword"></el-input>
+              </el-form-item>
+            </el-form>
+          </div>
+        </transition>
       </el-tab-pane>
-      <el-tab-pane label="游戏客户端" v-if="false">
+      <el-tab-pane label="游戏客户端" v-if="false" name="game">
         游戏客户端
       </el-tab-pane>
     </el-tabs>
@@ -43,17 +53,14 @@
 
 <script>
 import {PATH_CHANGEPWD_LOGIN, PATH_CHANGEPWD_CLAIM} from '@/service/member/member_center.url'
-import {removeSessionStorage} from '@/assets/scripts/storage'
-// import types from '@/store/share.types'
+import {CHANGE_PWD} from '@/service/agent/user.url'
+import {mapGetters} from 'vuex'
 export default {
   name: 'change_password',
-  components: {
-    // NocTop
-  },
   data () {
     return {
       formLabelWidth: '100px',
-      currentTabIndex: '0', // 默认是修改登录密码
+      currentTab: 'login', // 默认是修改登录密码
       claimPwdIsSet: false, // 是不是已经设置了取款密码，如果设置了，则需要输入原来的，可能需要接口调
       form: {
         memberPassword: '', // 原密码
@@ -84,38 +91,33 @@ export default {
       }
     }
   },
+  computed: mapGetters(['ROLE']),
   methods: {
-    onTabClick (evt) { // 切换标签栏
-      if (evt.index === '0') {
-        this.form = {
-          memberPassword: '',
-          newMemberPassowrd: '',
-          confirmNewMemberPassword: ''
-        }
-      } else {
-        this.form = {
-          withdrawalPassowrd: '', // 原取款密码,如果有
-          newWithdrawalPassowrd: '', // 新取款密码
-          confirmWithdrawalPassword: '' // 确认取款密码
-        }
-      }
-      this.currentTabIndex = evt.index
-    },
     submit () { // 立即修改
       this.$refs['validateForm'].validate((valid) => {
         if (valid) {
-          this.post(this.currentTabIndex === '0' ? PATH_CHANGEPWD_LOGIN : PATH_CHANGEPWD_CLAIM, this.form).then(res => {
-            if (res.code === 1) {
+          let _form = {}
+          let _loginPath = PATH_CHANGEPWD_LOGIN
+          if (this.ROLE === 'member') {
+            _form = this.form
+          } else {
+            _loginPath = CHANGE_PWD
+            _form = {
+              agentPassword: this.form.memberPassword,
+              newAgentPassword: this.form.newMemberPassowrd,
+              agentConfirmPassword: this.form.confirmNewMemberPassword
+            }
+          }
+          this.post(this.currentTab === 'login' ? _loginPath : PATH_CHANGEPWD_CLAIM, _form).then(res => {
+            if (res.status) {
               this.$message.success('修改成功, 请重新登录')
-              this.$store.commit('SET_TOKEN', null)
-              this.$store.commit('SET_BASE_INFO', {})
-              removeSessionStorage()
-              setTimeout(() => {
-                this.$router.push('/member/index')
-              }, 500)
+              this.$store.dispatch('SET_LOGIN_INFO', {token: null, baseInfo: {}, startPolling: false})
+              // this.$store.commit('SET_TOKEN', null)
+              // this.$store.commit('SET_BASE_INFO', {})
+              setTimeout(() => { this.$router.push(`/${this.ROLE}/index`) }, 500)
             }
           }, err => {
-            console.log(err)
+            this.$message.error(err)
           })
         } else {
           this.$message.error('请完善信息')

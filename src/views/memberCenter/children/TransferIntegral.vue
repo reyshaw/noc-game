@@ -47,9 +47,9 @@ export default {
     getPlatform () {
       this.get(PATH_GAMEPLATFORM_PAY, {}).then(res => {
         this.platformList = res.data
-        console.log(this.platformList)
+        // console.log(this.platformList)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     }
   }

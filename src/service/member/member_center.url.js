@@ -11,6 +11,7 @@ export const PATH_WITHDRAW_PAY = OGWLS_USER_CLIENT + '/members/withdraw' // 取�
 export const PATH_ONLINEBANKING_PAY = OGWLS_PAY + '/pay/onlineBanking' // 网银渠道
 export const PATH_SCANPAY_PAY = OGWLS_PAY + '/pay/scanPay' // 在线第三方扫码支付
 export const PATH_OFFLINESCANPAY_PAY = OGWLS_PAY + '/offlinePay/offlineScanPay' // 在线第三方扫码支付
+export const PATH_OFFLINEBANKPAY_PAY = OGWLS_PAY + '/offlinePay/offlineBankPay' // 在线第三方扫码支付
 export const PATH_TRANSFER_PAY = OGWLS_PAY + '/member/transfer/transfer' // 上下分
 export const PATH_GAMEPLATFORM_PAY = OGWLS_GAME_API + '/member/game/game-providers/1' // 平台列表
 export const PATH_BALANCE_PAY = OGWLS_USER_CLIENT + '/member/transfer/balance' // 获取平台余额
@@ -26,8 +27,7 @@ export const PATH_SELECTWATER_CLIENT = OGWLS_USER_CLIENT + '/record/selectWater'
 export const PATH_GETWATER_CLIENT = OGWLS_USER_CLIENT + '/record/acquisitionBackWater' // 领取返水
 export const PATH_GETOFFER_CLIENT = OGWLS_USER_CLIENT + '/member/getTransferBalance' // 领取优惠
 export const PATH_GETCHIPTOTAL_CLIENT = OGWLS_USER_CLIENT + '/member/getChipTotal' // 获取筹码/优惠卷 的总数
-export const PATH_GETCOUPON_CLIENT = OGWLS_USER_CLIENT + '/member/getOfferBalance' // 获取会员存款优惠卷
-export const PATH_GETCHIPRECORD_CLIENT = OGWLS_USER_CLIENT + '/member/getChipRecord' // 获取会员筹码记录
+export const PATH_GETCOUPON_CLIENT = OGWLS_USER_CLIENT + '/member/getChipCouponRecord' // 获取会员存款优惠卷/筹码
 
 /** 个人中心(member) **/
 export const PATH_LIST_CAPITAL = OGWLS_USER_CLIENT + '/record/capital' // 资金记录

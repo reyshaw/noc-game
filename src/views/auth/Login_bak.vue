@@ -65,8 +65,8 @@
 </template>
 
 <script>
-import FastLogin from '@/components/noc_top/children/FastLogin'
-import CodeLogin from '@/components/noc_top/children/CodeLogin'
+import FastLogin from '@/components/noc-top/children/FastLogin'
+import CodeLogin from '@/components/noc-top/children/CodeLogin'
 export default {
   name: 'login',
   components: {

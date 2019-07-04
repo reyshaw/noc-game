@@ -18,7 +18,7 @@ export default {
         {title: '自助催账', route: 'demandPayment'}]},
     {submenu: '个人中心',
       botmenu: [{title: '个人资料', route: 'personalData'},
-        {title: '修改密码', route: 'changePassword'},
+        {title: '安全设置', route: 'changePassword'},
         {title: '银行卡管理', route: 'bankcardManage'},
         {title: '消息公告', route: 'notices'},
         {title: '推荐好友', route: 'recommendFriends'}]

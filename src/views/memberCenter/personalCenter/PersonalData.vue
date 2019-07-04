@@ -43,7 +43,7 @@
         <el-button size="mini">发送验证码</el-button>
       </el-form-item>
       <el-form-item prop="memberEmail" label="电子邮件:">
-        <el-input size="small" placeholder="请填写您的电子邮件" v-model.trim.number="form.memberEmail" :disabled="disables.email"></el-input>
+        <el-input size="small" placeholder="请填写您的电子邮件" v-model.trim="form.memberEmail" :disabled="disables.email"></el-input>
         <el-tag style="margin-left: 10px;" class="el-icon-warning" type="warning">电子邮箱须作为取回密码的重要凭证，请务必正确填写，绑定后将无法修改</el-tag>
       </el-form-item>
       <el-form-item prop="emailCode" label="#"  v-if="!disables.email">
@@ -83,7 +83,7 @@ export default {
     let memberMobile = _memberInfo.memberMobile || ''
     let address = _memberInfo.address || ''
     let memberName = _memberInfo.memberRealName || ''
-    let cityDistrict = [String(_memberInfo.provinceId), String(_memberInfo.cityId)] || []
+    let cityDistrict = _memberInfo.provinceId ? ([String(_memberInfo.provinceId || ''), String(_memberInfo.cityId || '')] || []) : []
     return {
       formLabelWidth: '140px',
       CONFIG: {
@@ -143,7 +143,8 @@ export default {
           // { required: true, message: '请输入新设密码', trigger: 'blur' }
         ],
         memberEmail: [
-          { required: true, message: '请输入邮箱地址', trigger: 'blur' }
+          { required: true, type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
+          // { type: 'email', message: '请输入正确的邮箱地址', trigger: 'change' }
         ],
         emailCode: [
           { required: true, message: '请输入邮箱验证码', trigger: 'blur' }
@@ -186,7 +187,7 @@ export default {
     submit () { // 提交
       this.$refs['validateForm'].validate((valid) => {
         if (valid) {
-          console.log(`valid`)
+          // console.log(`valid`)
           let _memberInfo = Object.assign({}, this.memberInfo)
           if (this.form.cityDistrict) {
             this.form.provinceId = this.form.cityDistrict[0]
@@ -206,7 +207,7 @@ export default {
             this.$store.commit('SET_BASE_INFO', _memberInfo)
             this.$message.success('修改成功')
           }, err => {
-            console.log(err)
+            this.$message.error(err)
           })
         } else {
           this.$message.error('验证未通过')
@@ -215,7 +216,7 @@ export default {
       })
     },
     handleChange (value) {
-      console.log(value)
+      // console.log(value)
     }
   }
 }

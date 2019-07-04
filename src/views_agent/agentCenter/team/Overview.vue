@@ -38,7 +38,7 @@ export default {
   methods: {
     handleCopy, // 复制
     handleDownloadQRcode (img) { // 下载Qr图片
-      console.log(img)
+      // console.log(img)
     }
   },
   beforeRouteEnter (to, from, next) {

@@ -11,38 +11,38 @@
           </ul>
         </div>
         <el-form v-if="showRegister" label-width="80px" :rules="rules" ref="registerForm" :model="form">
-          <div v-for="(item, index) in registerItems" :key="index" v-if="item.ifShow">
-            <el-form-item :prop="item.key">
+          <div v-for="(item, index) in registerItems" :key="index">
+            <el-form-item :prop="item.model">
               <el-input
                 size="medium"
-                :class="item.key"
-                v-if="item.key !== 'memberDateBirth'"
-                :type="item.key === 'memberConfirmPassword'||item.key === 'withdrawalPassword'||item.key === 'memberPassword'? ifShow ? 'password' : 'text' : 'text'"
-                :style="item.key === 'registerCode' ? 'width:220px' : 'width:430px'"
-                v-model="form[item.key]"
-                :placeholder="item.placeholder">
+                :class="item.model"
+                v-if="item.model !== 'birthDate'"
+                :type="item.type"
+                :style="item.model === 'registerCode' ? 'width:220px' : 'width:430px'"
+                v-model="form[item.model]"
+                :placeholder='`${item.placeholder} (${item.isRequired ? "必填" : ""})`'>
                 <i slot="prefix" :class="'iconfont '+item.icon"></i>
-                <i @click="ifShow = !ifShow" v-if="item.key === 'withdrawalPassword'" slot="suffix" class="iconfont iconyincang"></i>
+                <i @click="ifShow = !ifShow" v-if="item.model === 'withdrawalPassword'" slot="suffix" class="iconfont iconyincang"></i>
               </el-input>
               <el-date-picker
                 size="medium"
                 style="width: 430px"
-                v-model="form.memberDateBirth"
-                v-if="item.key === 'memberDateBirth'"
+                v-model="form.birthDate"
+                v-if="item.model === 'birthDate'"
                 type="date"
-                placeholder="选择日期">
+                :placeholder='`请选择出生选择日期(${item.isRequired ? "必填" : ""})`'>
               </el-date-picker>
-              <div v-if="item.key === 'registerCode'" class="imgArea" @click="updateImgUrl()"><img :src="imgUrl" alt="验证码" ></div>
+              <div v-if="item.model === 'registerCode'" class="imgArea" @click="updateImgUrl()"><img :src="imgUrl" alt="验证码" ></div>
             </el-form-item>
-            <el-form-item v-if="(item.key === 'memberMobile' && showPhoneCode) || (item.key === 'memberEmail' && showEmailCode)" :prop="item.key+'Code'">
+            <el-form-item v-if="(item.model === 'mobileNumber' && item.checked) || (item.model === 'email' && item.checked)" :prop="item.model+'Code'">
               <el-input
                 size="medium"
-                :class="item.key+'verify'"
+                :class="item.model+'verify'"
                 style="width: 430px"
-                v-model="form[item.codeType+'VerifyCode']"
+                v-model="form[item.subModel]"
                 :placeholder="item.subplaceholder">
                 <i slot="prefix" :class="'iconfont '+item.subIcon"></i>
-                <i type="text" slot="append" @click="sendVerifyCode($event,item.key,form[item.key])" style="cursor: pointer">发送验证码</i>
+                <i type="text" slot="append" @click="sendVerifyCode($event,item.model,form[item.model])" style="cursor: pointer">发送验证码</i>
               </el-input>
             </el-form-item>
           </div>
@@ -97,7 +97,7 @@ import {
 } from '@/service/member/urls.js'
 import {formatDate, getUUID} from '@/assets/scripts/utils'
 // import { setSessionStorage } from '@/assets/scripts/storage'
-import {mapState} from 'vuex'
+import {mapGetters} from 'vuex'
 // import types from '@/store/share.types'
 
 export default {
@@ -106,7 +106,7 @@ export default {
     let validatePWD = (rule, value, callback) => {
       if (!value) {
         return callback(new Error('请再次输入密码'))
-      } else if (value !== this.form.memberPassword) {
+      } else if (value !== this.form.password) {
         callback(new Error('两次输入的密码必须一致'))
       } else {
         callback()
@@ -122,25 +122,29 @@ export default {
     return {
       scroll: 0, // 滚动长度
       showRegister: true,
-      registerItemsStr: [], // 未处理的配置项数据
-      registerItems: [], // 处理后的配置项数据
+      registerItems: [], // 配置项数据
       showEmailCode: false, // 处理后的配置项数据
       showPhoneCode: false, // 处理后的配置项数据
       verifyType: '', // 显示的验证码种类
       verifyCodeShowStatus: false, // 是否显示验证码唯一标识
       verifyPlace: 0, // 登录验证码还是注册验证码
       form: { // 表单数据
-        inviteCode: '',
-        memberAccount: '',
-        memberConfirmPassword: '',
-        memberDateBirth: '',
-        memberEmail: '',
-        memberMobile: '',
-        memberPassword: '',
-        memberRealName: '',
-        promotionCode: '5466oRak',
+        account: '',
+        password: '',
+        confirmPassword: '',
+        realName: '',
+        mobileNumber: '',
+        email: '',
         withdrawalPassword: '',
+        zoneName: '',
+        otherZoneName: '',
+        promotionCode: '5466oRak',
+        weChatAccount: '',
         agreement: true,
+        withdrawalBank: '',
+        withdrawalBankAccount: '',
+        withdrawalBankAddr: '',
+        inviteCode: '',
         phoneVerifyCode: '', // 手机验证码
         emailVerifyCode: '', // 邮箱验证码
         registerCode: '' // 图片证码
@@ -162,42 +166,42 @@ export default {
         timestamp: ''
       },
       rules: { // 验证规则
-        memberAccount: [
+        account: [
           { required: true, message: '请输入您的会员账号', trigger: 'blur' },
           { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' },
           { pattern: /^[a-zA-Z]\w{2,11}$/, message: '英文字母开头的数字、英文字母组合' }
         ],
-        memberPassword: [
+        password: [
           { required: true, message: '请输入您的密码', trigger: 'blur' },
           { min: 6, max: 12, message: '长度在 6 到 12 个字符', trigger: 'blur' }
         ],
-        memberConfirmPassword: [
+        confirmPassword: [
           { validator: validatePWD, trigger: 'blur' }
         ],
-        memberMobile: [
+        mobileNumber: [
           { required: true, message: '输入您的手机号码', trigger: 'blur' },
           { pattern: /^1[34578]\d{9}$/, message: '目前只支持中国大陆的11位手机号码' }
         ],
-        memberRealName: [
+        realName: [
           { required: true, message: '请输入您的真实姓名', trigger: 'blur' },
           { min: 2, max: 10, message: '长度在 2 到 10 个字符', trigger: 'blur' },
           { pattern: /^([a-zA-Z0-9\u4e00-\u9fa5\\·]{1,10})$/, message: '请输入正确的姓名' }
         ],
-        memberDateBirth: [
+        birthDate: [
           { required: true, message: '请选择您的出生日期', trigger: 'blur' }
         ],
         withdrawalPassword: [
           { required: true, message: '请输入您的取款密码', trigger: 'blur' },
           { pattern: /^[0-9]{6}$/, message: '6位数字' }
         ],
-        memberEmail: [
+        email: [
           { required: true, message: '邮箱地址不能为空', trigger: 'blur' },
           { type: 'email', message: '请输入正确的邮箱地址', trigger: 'blur' }
         ],
         promotionCode: [
           { required: false, message: '请输入推广码', trigger: 'blur' }
         ],
-        inviteCode: [
+        inviteCode: (item) => [
           { required: false, message: '请输入邀请码', trigger: 'blur' }
         ],
         agreement: [
@@ -210,7 +214,7 @@ export default {
     this.updateImgUrl()
   },
   computed: {
-    ...mapState(['defaultConfig'])
+    ...mapGetters(['CONFIG'])
   },
   mounted () {
     window.addEventListener('scroll', this.scrollDs, true)
@@ -243,116 +247,103 @@ export default {
       }
     },
     getConfig () { // 1 获取注册配置参数
-      this.registerItemsStr = this.defaultConfig.list[0].registerItemsStr
-      this.verifyCodeShowStatus = !this.defaultConfig.filter.verifyCodelist[0].verifyCodeShowStatus
-      this.verifyType = this.defaultConfig.filter.verifyCodelist[0].verifyCodeMode
-      console.log(this.verifyType, this.verifyCodeShowStatus)
+      // console.log(this.CONFIG.form)
+      this.registerItems = JSON.parse(JSON.stringify(this.CONFIG.form))
+      this.verifyType = this.CONFIG.verifyCodeMode
       this.transformDate()
     },
     transformDate () { // 2 转换成v-for的key
-      this.registerItemsStr.map(str => {
-        let nObj = {}
-        nObj.required = str.split(':')[0] === '1'
-        nObj.ifShow = true
-        const b = str.split(':')[1]
-        switch (b) {
-          case '0' :
-            nObj.key = 'memberAccount'
-            nObj.placeholder = '请输入账号'
-            nObj.icon = 'iconusername'
+      this.registerItems.map(obj => {
+        switch (obj.model) {
+          case 'account' :
+            obj.placeholder = '请输入账号'
+            obj.icon = 'iconusername'
             break
-          case '1' :
-            nObj.key = 'memberPassword'
-            nObj.placeholder = '请设置6至12位登录密码'
-            nObj.icon = 'iconlock-fill'
+          case 'password' :
+            obj.placeholder = '请设置6至12位登录密码'
+            obj.icon = 'iconlock-fill'
             break
-          case '2' :
-            nObj.key = 'memberConfirmPassword'
-            nObj.placeholder = '请再次输入登录密码'
-            nObj.icon = 'iconlock-fill'
+          case 'confirmPassword' :
+            obj.placeholder = '请再次输入登录密码'
+            obj.icon = 'iconlock-fill'
             break
-          case '3' :
-            nObj.key = 'memberRealName'
-            nObj.placeholder = '请输入真实姓名'
-            nObj.icon = 'iconuser-circle'
+          case 'realName' :
+            obj.placeholder = '请输入真实姓名'
+            obj.icon = 'iconuser-circle'
             break
-          case '4' :
-            nObj.key = 'memberDateBirth'
-            nObj.placeholder = '请输入出生日期'
-            nObj.icon = 'iconcalendaralt-fill'
+          case 'birthDate' :
+            obj.placeholder = '请输入出生日期'
+            obj.icon = 'iconcalendaralt-fill'
             break
-          case '5' :
-            nObj.key = 'memberMobile'
-            nObj.codeType = 'phone'
-            nObj.placeholder = '请输入手机号码'
-            nObj.subplaceholder = '请输入短信验证码'
-            nObj.icon = 'iconmobile-alt'
-            nObj.subIcon = 'iconcommentdots-fill'
-            let itemKeys = []
-            this.registerItemsStr.map((obj) => {
-              itemKeys.push(obj.split(':')[0])
-              itemKeys.push(obj.split(':')[1])
-            })
-            nObj.hasCode = itemKeys.indexOf('10') > -1
+          case 'mobileNumber' :
+            obj.codeType = 'mobileNumber'
+            obj.placeholder = '请输入手机号码'
+            obj.checked = this.CONFIG.checkItems === 0
+            obj.subModel = 'phoneVerifyCode'
+            obj.subplaceholder = obj.checked ? '请输入短信验证码' : ''
+            obj.icon = 'iconmobile-alt'
+            obj.subIcon = 'iconcommentdots-fill'
             break
-          case '6' :
-            nObj.key = 'memberEmail'
-            nObj.codeType = 'email'
-            nObj.placeholder = '请输入电子邮箱'
-            nObj.subplaceholder = '请输入邮箱验证码'
-            nObj.icon = 'el-icon-edit'
-            nObj.subIcon = 'iconmail-fill'
-            let itemKeys1 = []
-            this.registerItemsStr.map((obj) => {
-              itemKeys1.push(obj.split(':')[0])
-              itemKeys1.push(obj.split(':')[1])
-            })
-            nObj.hasCode = itemKeys1.indexOf('11') > -1
+          case 'email' :
+            obj.codeType = 'email'
+            obj.placeholder = '请输入电子邮箱'
+            obj.checked = this.CONFIG.checkItems === 0
+            obj.subModel = 'emailVerifyCode'
+            obj.subplaceholder = '请输入邮箱验证码'
+            obj.icon = 'el-icon-edit'
+            obj.subIcon = 'iconmail-fill'
             break
-          case '7' :
-            nObj.key = 'withdrawalPassword'
-            nObj.placeholder = '请输入取款密码'
-            nObj.icon = 'iconkey'
+          case 'withdrawalPassword' :
+            obj.placeholder = '请输入取款密码'
+            obj.icon = 'iconkey'
             break
-          case '8' :
-            nObj.key = 'promotionCode'
-            nObj.placeholder = '推广码'
-            nObj.icon = 'iconqrcode'
+          case 'zoneName' :
+            obj.placeholder = '请输入推广域名'
+            obj.icon = 'icontuiguangma'
             break
-          case '9' :
-            nObj.key = 'inviteCode'
-            nObj.placeholder = '邀请码'
-            nObj.icon = 'iconuserplus-fill'
+          case 'otherZoneName' :
+            obj.placeholder = '请输入其他推广域名'
+            obj.icon = 'icontuiguangma'
             break
-          case '10' :
-            this.showEmailCode = true
-            nObj.ifShow = false
-            nObj.key = 'emailVerifyCode'
-            nObj.placeholder = '邮箱验证'
-            nObj.icon = 'icon-bangding'
+          case 'weChatAccount' :
+            obj.placeholder = '微信号'
+            obj.icon = 'iconweixin2'
             break
-          case '11' :
-            this.showPhoneCode = true
-            nObj.ifShow = false
-            nObj.key = 'phoneVerifyCode'
-            nObj.placeholder = '手机验证'
-            nObj.icon = 'icon-bangding'
+          case 'withdrawalBank' :
+            obj.placeholder = '取款银行'
+            obj.icon = 'iconcunkuan'
             break
-          case '12' :
-            if (this.verifyType === '1' || this.verifyType === '2' || this.verifyType === '0') {
-              nObj.key = 'registerCode'
-              nObj.placeholder = '请输入图像验证码'
-              nObj.icon = 'iconVerification_code'
+          case 'withdrawalBankAccount' :
+            obj.placeholder = '取款银行账户'
+            obj.icon = 'icontuiguangma'
+            break
+          case 'withdrawalBankAddr' :
+            obj.placeholder = '取款银行地址'
+            obj.icon = 'iconyouxiangyanzhengma'
+            break
+          case 'promotionCode' :
+            obj.placeholder = '推广码'
+            obj.icon = 'iconqrcode'
+            break
+          case 'inviteCode' :
+            obj.placeholder = '邀请码'
+            obj.icon = 'iconuserplus-fill'
+            break
+          case 'registerCode' :
+            if (this.verifyType === 0 || this.verifyType === 1 || this.verifyType === 2) {
+              obj.placeholder = '请输入图像验证码'
+              obj.icon = 'iconVerification_code'
             }
             break
           default:
-            nObj.key = ''
-            nObj.placeholder = ''
-            nObj.icon = ''
+            obj.key = ''
+            obj.placeholder = ''
+            obj.icon = ''
             break
         }
-        this.registerItems.push(nObj)
+        return obj
       })
+      // console.log(this.registerItems)
       this.registerItems.map(obj => {
         if (this.rules[obj.key]) {
           this.rules[obj.key][0].required = obj.required
@@ -369,9 +360,9 @@ export default {
         timestamp: new Date().getTime() // 携带时间戳
       }
       this.post(PATH_SEND_EMAIL, payload, header).then(res => {
-        console.log(res)
+        // console.log(res)
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     sendVerifyCode (e, code, path) { // 3.2发送验证码倒计时
@@ -403,7 +394,7 @@ export default {
         if (valid) {
           this.hanleRegister()
         } else {
-          console.log('error submit!!')
+          // console.log('error submit!!')
           return false
         }
       })
@@ -414,23 +405,22 @@ export default {
         memberDateBirth: formatDate(this.form.memberDateBirth)
       }
       this.post(PATH_REGISTER_MEMBER, payload, this.headers).then(res => { // 获取配置参数
-        switch (res.code) {
-          case 1:
-            this.$message('恭喜您，注册成功！')
-            this.$router.push({
-              name: 'index',
-              params: 'login'
-            })
-            // this.memberInfo = res.data.profile
-            this.$store.dispatch('SET_LOGIN', Object.assign(res.data.profile, {token: res.data.token}))
-            break
-          default:
-            this.$message(res.msg)
-            break
+        // console.log(res.status)
+        if (res.status) {
+          this.$store.commit('SET_TOKEN', res.data.token)
+          this.$store.commit('SET_BASE_INFO', res.data.profile)
+          this.$message('恭喜您，注册成功！')
+          this.$router.push({
+            name: 'index',
+            params: 'login'
+          })
+          // this.memberInfo = res.data.profile
+          // // console.log(Object.assign(res.data.profile, {token: res.data.token}))
+          // this.$store.dispatch('SET_LOGIN', Object.assign(res.data.profile, {token: res.data.token}))
         }
         this.updateImgUrl()
       }, err => {
-        console.log(err)
+        this.$message.error(err)
       })
     },
     loginNow () {
@@ -440,13 +430,12 @@ export default {
           memberPassword: this.loginForm.password, // 登录密码
           verifyCode: this.loginForm.verifyCode // 验证码
         }
-        console.log(payload)
         let header = {
           randomregister: this.headers.randomregister,
           timestamp: this.headers.timestamp
         }
         this.post(PATH_MEMBERLOGIN_LOGIN, payload, header).then(res => {
-          if (res.code === 1) {
+          if (res.status) {
             this.$store.commit('SET_TOKEN', res.data.token)
             this.$store.commit('SET_BASE_INFO', res.data.profile)
             this.$message({type: 'success', message: '恭喜您登陆成功'})
@@ -461,7 +450,7 @@ export default {
             // })
           }
         }, err => {
-          console.log(err)
+          this.$message.error(err)
         })
       } else {
         this.updateImgUrl()

@@ -19,7 +19,7 @@
       </li>
       <li>
         <p class="outLink">
-          <a class="forget" href="javascript:void (0);" @click="$emit('changeLoginStyle', 'login')"><i class="iconfont iconleftarrow"></i> 账号登录</a>
+          <a class="forget" href="javascript:void (0);" @click="handleLogin"><i class="iconfont iconleftarrow"></i> 账号登录</a>
           <a class="register" href="javascript:void (0);" @click="jumpTo('register')">新用户注册 <i class="iconfont iconrightarrow"></i></a>
         </p>
       </li>
@@ -28,6 +28,7 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 // import {getUUID} from '@/assets/scripts/utils'
 // import { setSessionStorage, getSessionStorage } from '@/assets/scripts/storage'
 // import { PATH_VERIFYCODE_IMAGE } from '@/service/member/urls.js'
@@ -42,11 +43,16 @@ export default {
     }
   },
   methods: {
+    ...mapMutations('member', ['SET_LOGIN_DIALOG', 'SET_REGISTER_DIALOG']),
     jumpTo (route) {
-      this.$router.push({
-        name: route
-      })
+      this.$emit('changeLoginStyle', false)
+      this.SET_REGISTER_DIALOG(true)
+      // this.$router.push('/member/index')
       // this.store.commit(types.SHOWLOGINDIA, false)
+    },
+    handleLogin () {
+      this.SET_LOGIN_DIALOG(true)
+      this.$emit('changeLoginStyle', false)
     }
   }
 }

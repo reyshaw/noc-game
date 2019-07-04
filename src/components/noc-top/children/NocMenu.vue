@@ -21,7 +21,7 @@
 
 <script>
 import types from '@/store/share.types'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapMutations} from 'vuex'
 import CONFIG from './nocMenu.config'
 export default {
   name: 'noc_menu',
@@ -44,8 +44,9 @@ export default {
     }
   },
   methods: {
+    ...mapMutations(['SET_LOGIN_DIALOG']),
     jumpTo (item) {
-      console.log(item)
+      // console.log(item)
       if (item.type === 'link') {
         window.open(item.value)
       } else if (item.type === 'preLink') {
@@ -56,7 +57,7 @@ export default {
             type: 'warning',
             message: '请先登录'
           })
-          this.$store.commit(types.SHOWLOGINDIA, true)
+          this.$store.commit(types.SET_LOGIN_DIALOG, true)
         }
       } else if (item.type === 'route') {
         this.$router.push({

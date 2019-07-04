@@ -4,19 +4,23 @@
       <el-form-item prop="account" label="存款账户">
         {{memberInfo.memberAccount}}
       </el-form-item>
-      <el-form-item prop="account" label="存款金额">
+      <el-form-item
+        prop="account"
+        label="存款金额">
         <div class="input">
-          <input v-model.trim.number="form.amount" type="text" placeholder="存款范围10~1000000" @blur="getOffer">
+          <input v-model.trim.number="form.amount" type="text" :placeholder="`存款范围${this.currentBank.minimumTransactionLimit}~${this.currentBank.maximumTransactionLimit}`" @blur="getOffer">
           <div class="addon">.5</div>
         </div>
-        <i class="el-icon-success"></i>
-        <span v-if="offerAmount">优惠￥{{this.offerAmount}}</span>
+        <div class="promot">
+          <i v-if="form.offerAmount && accept === 'accept'" class="el-icon-success"></i>
+          <span v-if="form.offerAmount && accept === 'accept'">优惠￥{{this.form.offerAmount | formatMoney}}</span>
+        </div>
       </el-form-item>
       <el-form-item prop="account" label="优惠赠款">
-        <input type="radio" id="accept" name="drone" value="huey" checked>
-        <label for="accept">接受</label>
-        <input type="radio" id="refuse" name="drone" value="huey" checked>
-        <label for="refuse">拒绝</label>
+        <input type="radio" v-model="accept" id="accept1" name="drone" value="accept" @click="handleAccept">
+        <label for="accept1">接受</label>
+        <input type="radio" v-model="accept" id="refuse1" name="drone" value="refuse" checked  @click="handleAccept">
+        <label for="refuse1">拒绝</label>
       </el-form-item>
       <el-form-item>
         <span>温馨提示：</span>完成存款后可以前往活动大厅申请优惠
@@ -65,29 +69,49 @@ export default {
   data () {
     return {
       form: {
-        amount: ''
+        amount: '',
+        offerAmount: 0
       },
       radio: '',
-      offerAmount: ''
+      accept: 'accept'
     }
   },
   mounted () {
-    console.log()
+    // console.log()
   },
   methods: {
     handleDeposit () {
-      this.$emit('deposit', this.form.amount)
+      this.$emit('deposit', this.form)
+    },
+    handleAccept () {
+      if (Object.keys(this.currentBank).length) {
+        this.getOffer()
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请选择银行来获取对应的优惠金额'
+        })
+      }
     },
     getOffer () {
-      const payload = {
-        amount: this.form.amount,
-        isOnline: parseInt(this.currentBank.onOrOffFlag) ? 0 : 1
+      if (this.form.amount && Object.keys(this.currentBank).length) {
+        // console.log(1)
+        const payload = {
+          amount: this.form.amount,
+          isOnline: parseInt(this.currentBank.onOrOffFlag)
+        }
+        this.get(PATH_DEPOSITOFFER_PAY, payload).then(res => {
+          if (res.status) {
+            this.form.offerAmount = res.data.discountAmount * 10 / 10
+            // console.log(this.form.offerAmount)
+          } else {
+          }
+        }, err => {
+          this.$message.error(err)
+        })
+      } else {
+        this.form.offerAmount = 0
       }
-      this.get(PATH_DEPOSITOFFER_PAY, payload).then(res => {
-        this.offerAmount = res.data.discountAmount
-      }, err => {
-        console.log(err)
-      })
     }
   }
 }
@@ -99,6 +123,7 @@ export default {
   justify-content: space-evenly;
   .el-form{
     margin-top: 27px;
+    width: 450px;
     .el-form-item{
       margin-bottom: 0px;
       .input{
@@ -116,19 +141,19 @@ export default {
         }
       }
     }
-    i,span{
+    .promot{
       display: inline-block;
-    }
-    i{
-      color: #4DC033;
-      font-size: 25px;
-      margin: 0 15px;
-      vertical-align: middle;
-    }
-    span{
-      font-family: "Microsoft YaHei";
-      font-size: 16px;
-      vertical-align: middle;
+      i{
+        color: #4DC033;
+        font-size: 25px;
+        margin-left:15px;
+        vertical-align: middle;
+      }
+      span{
+        font-family: "Microsoft YaHei";
+        font-size: 16px;
+        vertical-align: middle;
+      }
     }
   }
   .reminder{

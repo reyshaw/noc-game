@@ -26,7 +26,7 @@ export default {
     Slider,
     Contact
   },
-  computed: mapGetters(['memberInfo', 'SUPER_IDS']),
+  computed: mapGetters(['CONFIG', 'SUPER_IDS']),
   methods: {
   }
 }

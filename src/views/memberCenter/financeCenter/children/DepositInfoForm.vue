@@ -2,34 +2,37 @@
   <div class="submitForm">
     <el-form ref="form" :model="form" label-width="120px">
       <el-form-item prop="account" label="存款账户">
-        {{this.account}}
+        {{memberInfo.memberAccount}}
       </el-form-item>
       <el-form-item prop="amount" label="存款金额">
         <div class="input">
-          <input v-model.trim.number="form.amount" type="text" placeholder="存款范围10.00~1000000.00">
+          <input v-model.trim.number="form.amount" type="text" :placeholder="`存款范围${this.currentBank.minimumTransactionLimit}~${this.currentBank.maximumTransactionLimit}`" @blur="getOffer">
           <div class="addon">.5</div>
         </div>
-        <i class="el-icon-success"></i>
-        <span>优惠￥4.23</span>
+        <div class="promote" v-if="form.offerAmount && accept === 'accept'">
+          <i class="el-icon-success"></i>
+          <span>优惠￥{{this.form.offerAmount | formatMoney}}</span>
+        </div>
       </el-form-item>
       <el-form-item prop="grants" label="优惠赠款">
-        <input type="radio" id="accept" name="grants" value="huey" checked>
-        <label for="accept">接受</label>
-        <input type="radio" id="refuse" name="grants" value="huey" checked>
-        <label for="refuse">拒绝</label>
+        <input type="radio" v-model="accept" id="accept2" name="drone" value="accept" @click="handleAccept">
+        <label for="accept2">接受</label>
+        <input type="radio" v-model="accept" id="refuse2" name="drone" value="refuse" checked  @click="handleAccept">
+        <label for="refuse2">拒绝</label>
       </el-form-item>
       <el-form-item prop="thirdAccount" label="存款微信账号">
-        <input v-model.trim.number="form.thirdAccount" type="text" placeholder="请输入存款微信账号">
+        <input  :style="InputStyle" v-model.trim.number="form.thirdAccount" type="text" placeholder="请输入存款微信账号">
       </el-form-item>
       <el-form-item prop="nickName" label="存款微信昵称">
-        <input v-model.trim="form.nickName" type="text" placeholder="请输入存款微信昵称">
+        <input  :style="InputStyle" v-model.trim="form.nickName" type="text" placeholder="请输入存款微信昵称">
       </el-form-item>
       <el-form-item prop="orderNumber" label="存款订单号">
-        <input v-model.trim="form.orderNumber" type="text" placeholder="请输入存款订单号">
+        <input  :style="InputStyle" v-model.trim="form.orderNumber" type="text" placeholder="请输入存款订单号">
       </el-form-item>
       <el-form-item prop="time" label="存款时间">
         <el-date-picker
           size="mini"
+          :style="InputStyle"
           v-model="form.time"
           type="datetime"
           placeholder="选择日期时间"
@@ -57,6 +60,8 @@
 
 <script>
 import WarmPrompt from '@/views/memberCenter/wedgit/WarmPrompt'
+import {PATH_DEPOSITOFFER_PAY} from '@/service/member/member_center.url'
+import { mapState } from 'vuex'
 
 export default {
   name: 'deposit_info_form',
@@ -64,18 +69,26 @@ export default {
     WarmPrompt
   },
   props: {
+    currentBank: {
+      type: Object,
+      default: function () {
+        return {}
+      }
+    }
   },
   data () {
     return {
-      account: 'ogwistest001',
+      accept: 'accept',
       form: {
         amount: '',
         thirdAccount: '',
         nickName: '',
         orderNumber: '',
-        time: ''
+        time: '',
+        offerAmount: 0
       },
       radio: '',
+      InputStyle: 'width:193px;height:24px;',
       pickerOptions: {
         shortcuts: [{
           text: '今天',
@@ -100,9 +113,40 @@ export default {
       }
     }
   },
+  computed: {
+    ...mapState({
+      memberInfo: 'baseInfo'
+    })
+  },
   methods: {
     handleDeposit () {
       this.$emit('deposit', this.form)
+    },
+    getOffer () {
+      // console.log(this.currentBank)
+      if (this.form.amount && Object.keys(this.currentBank).length) {
+        const payload = {
+          amount: this.form.amount,
+          isOnline: parseInt(this.currentBank.onOrOffFlag)
+        }
+        this.get(PATH_DEPOSITOFFER_PAY, payload).then(res => {
+          this.form.offerAmount = res.data.discountAmount * 10 / 10
+        }, err => {
+          this.$message.error(err)
+        })
+      } else {
+        this.form.offerAmount = 0
+      }
+    },
+    handleAccept () {
+      if (Object.keys(this.currentBank).length) {
+        this.getOffer()
+      } else {
+        this.$message({
+          type: 'warning',
+          message: '请选择银行来获取对应的优惠金额'
+        })
+      }
     }
   }
 }
@@ -113,6 +157,7 @@ export default {
   display: flex;
   justify-content: space-evenly;
   .el-form{
+    width: 480px;
     margin-top: 27px;
     .el-form-item{
       margin-bottom: 0px;
@@ -141,7 +186,6 @@ export default {
       vertical-align: middle;
     }
     span{
-      font-family: "Microsoft YaHei";
       font-size: 16px;
       vertical-align: middle;
     }
