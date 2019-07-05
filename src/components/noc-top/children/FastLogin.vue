@@ -35,9 +35,9 @@
 
 <script>
 import {getUUID} from '@/assets/scripts/utils'
-import { setSessionStorage } from '@/assets/scripts/storage'
-import { PATH_VERIFYCODE_IMAGE, PATH_MEMBERLOGIN_LOGIN } from '@/service/member/urls.js'
-import {mapMutations} from 'vuex'
+// import { setSessionStorage } from '@/assets/scripts/storage'
+import { PATH_VERIFYCODE_IMAGE } from '@/service/member/urls.js'
+import {mapMutations, mapActions} from 'vuex'
 
 export default {
   name: 'fast_login',
@@ -82,6 +82,7 @@ export default {
 
   },
   methods: {
+    ...mapActions(['SET_LOGIN', 'SET_LOGOUT', 'SET_CONFIG']),
     ...mapMutations('member', ['SET_LOGIN_DIALOG', 'SET_REGISTER_DIALOG']),
     jumpTo (route) {
       this.SET_REGISTER_DIALOG(true)
@@ -108,8 +109,8 @@ export default {
       this.imgUrl = ''
       this.loginItems.randomlogin = getUUID()
       this.loginItems.loginTimestamp = new Date().getTime()
-      setSessionStorage('randomlogin', this.loginItems.randomlogin)
-      setSessionStorage('loginTimestamp', this.loginItems.loginTimestamp)
+      // setSessionStorage('randomlogin', this.loginItems.randomlogin)
+      // setSessionStorage('loginTimestamp', this.loginItems.loginTimestamp)
       this.imgUrl = PATH_VERIFYCODE_IMAGE + '?type=char' + '&randomlogin=' + this.loginItems.randomlogin + '&timestamp=' + this.loginItems.loginTimestamp + '&verifyType=1'
     },
     update (bool) { // 忘记密码框显示key状态改变
@@ -125,34 +126,37 @@ export default {
         }
       })
     },
-    loginNow () {
+    async loginNow () {
       if (this.form.account && this.form.password) {
         let payload = {
           memberAccount: this.form.account, // 登录账号
           memberPassword: this.form.password, // 登录密码
           verifyCode: this.form.verifyCode // 验证码
         }
+        await this.SET_LOGIN({user: payload, header: this.loginItems}) // this.ROLE === 'member' ? payload : agentPayload
+        this.$message({type: 'success', message: '恭喜您登陆成功'})
+        this.SET_LOGIN_DIALOG(false)
         // console.log(payload)
-        this.post(PATH_MEMBERLOGIN_LOGIN, payload).then(res => {
-          if (res.status) {
-            this.showLD(false)
-            this.$store.commit('SET_TOKEN', res.data.token)
-            this.$store.commit('SET_BASE_INFO', res.data.profile)
-            this.$emit('closeDialog')
-            this.$message({type: 'success', message: '恭喜您登陆成功'})
-            this.$router.push({
-              name: 'index'
-            })
-          } else {
-            this.updateImgUrl()
-            // this.$message({
-            //   type: 'warning',
-            //   message: res.msg
-            // })
-          }
-        }, err => {
-          this.$message.error(err)
-        })
+        // this.post(PATH_MEMBERLOGIN_LOGIN, payload).then(res => {
+        //   if (res.status) {
+        //     this.SET_LOGIN_DIALOG(false)
+        //     // this.$store.commit('SET_TOKEN', res.data.token)
+        //     // this.$store.commit('SET_BASE_INFO', res.data.profile)
+        //     // this.$emit('closeDialog')
+        //     this.$message({type: 'success', message: '恭喜您登陆成功'})
+        //     this.$router.push({
+        //       name: 'index'
+        //     })
+        //   } else {
+        //     this.updateImgUrl()
+        //     // this.$message({
+        //     //   type: 'warning',
+        //     //   message: res.msg
+        //     // })
+        //   }
+        // }, err => {
+        //   this.$message.error(err)
+        // })
       } else {
         this.updateImgUrl()
         // this.$message({

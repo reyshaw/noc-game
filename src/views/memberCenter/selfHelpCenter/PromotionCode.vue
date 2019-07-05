@@ -16,17 +16,29 @@
           :data="tableData"
           border
           v-loading="loading">
-          <el-table-column prop="describe" label="优惠券描述"></el-table-column>
-          <el-table-column prop="platform" label="使用平台"></el-table-column>
-          <el-table-column prop="time" label="到期时间"></el-table-column>
+          <el-table-column prop="lotteryTitle" label="优惠券描述"></el-table-column>
+          <el-table-column prop="platform" label="使用平台">
+            <template slot-scope="scope">
+              <span>{{parseInt(scope.row.platform) === 0 ? '全平台' : '全平台'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="expiredEndTime" label="到期时间"></el-table-column>
           <el-table-column
-            prop="type"
+            prop="useFlag"
             label="类型"
             :filters="CONFIG.TYPE"
             :filter-method="filterHandler"
-          ></el-table-column>
-          <el-table-column prop="audit" label="优惠稽核"></el-table-column>
-          <el-table-column prop="operate" label="操作"></el-table-column>
+          >
+            <template slot-scope="scope">
+              <span>{{parseInt(scope.row.useFlag) === 0 ? '未使用' : '已使用'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="lotteryAuditing" label="优惠稽核(打码倍数)"></el-table-column>
+          <el-table-column prop="operate" label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" :disabled="!!parseInt(scope.row.useFlag)" @click="handleTransfer(scope.row)">使用</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-scrollbar>
     </main>
@@ -42,11 +54,20 @@
       @cancel="handleDialog('cancel')"
       @confirm="handleDialog('confirm', arguments)">
     </game-type-dialog>
+    <el-dialog
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      width="30%">
+      <h1>使用优惠券<span @click="dialogVisible=false" class="close"></span></h1>
+      <transfer-coupon-or-chip
+      :form="form"></transfer-coupon-or-chip>
+    </el-dialog>
   </div>
 </template>
 
 <script>
 import Pagination from '@/components/noc-pagination'
+import TransferCouponOrChip from '../children/TransferCouponOrChip'
 import pickerMix from '@/mixins/picker.mix'
 import pageMix from '@/mixins/page.mix'
 import { PATH_GETCOUPON_CLIENT } from '@/service/member/member_center.url'
@@ -56,17 +77,18 @@ export default {
   mixins: [pickerMix, pageMix],
   components: {
     Pagination,
-    GameTypeDialog
+    GameTypeDialog,
+    TransferCouponOrChip
   },
   data () {
     return {
       listURL: PATH_GETCOUPON_CLIENT,
+      form: {},
       CONFIG: {
         TYPE: [
-          {value: 0, text: '全部'},
-          {value: 1, text: '未使用'},
-          {value: 2, text: '已使用'},
-          {value: 3, text: '已过期'}
+          {value: '0', text: '未使用'},
+          {value: '1', text: '已使用'},
+          {value: '2', text: '已过期'}
         ]
       },
       dialogFormVisible: false,
@@ -81,7 +103,8 @@ export default {
   },
   methods: {
     filterHandler (value, row) {
-      return row.tag === value
+      console.log(value, row)
+      return row.useFlag === value
     },
     handleDialog (type) {
       if (type === 'cancel') {

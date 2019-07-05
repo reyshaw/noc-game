@@ -44,6 +44,13 @@ const store = {
     [types.MSG_COUNT]: state => state.polling.msgCount
   },
   actions: {
+    [types.SET_ROLE]: async ({state, commit, dispatch}, role) => { // 角色改变
+      commit(types.SET_ROLE, role) // 改变角色值
+      if (state.token) {
+        await dispatch(types.SET_LOGOUT, true) // 强制登出并清空配置（clear token, baseInfo, polling）
+      }
+      await dispatch(types.SET_CONFIG, true) // 重新获取配置, true表示强制更新
+    },
     [types.SET_LOGIN]: async ({commit, dispatch}, {user, header}) => { // 登录操作
       if (!user || !header) {
         throw new Error('请求参数或请求头必传!')
@@ -59,7 +66,7 @@ const store = {
         dispatch(types.SET_LOGIN_INFO, {token: _user.token, baseInfo: _user.profile || _user.agentProfile, startPolling: true})
       }
     },
-    [types.SET_LOGIN_INFO]: ({commit, dispatch}, {token, baseInfo, startPolling}) => {
+    [types.SET_LOGIN_INFO]: ({commit, dispatch}, {token, baseInfo, startPolling}) => { // 获取登录信息
       commit(types.SET_TOKEN, token)
       commit(types.SET_BASE_INFO, baseInfo)
       dispatch(types.SET_POLLING, startPolling)
@@ -71,7 +78,7 @@ const store = {
         throw new Error(err)
       })
       if (_isDeleted) {
-        dispatch(types.SET_LOGIN_INFO, {token: null, baseInfo: {}, startPolling: false})
+        dispatch(types.SET_LOGIN_INFO, {token: null, baseInfo: {}, startPolling: false}) // 可以异步执行
         if (deleteConfig) { commit(types.SET_CONFIG, {}) }
       }
     },

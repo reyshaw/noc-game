@@ -64,7 +64,7 @@ request.interceptors.response.use(res => { // 200开头的
     case 1026:
     case 1000:
       Notification.error({
-        title: `认证失败`,
+        title: `认证失败,请重新登录后重试`,
         message: `${res.data.msg}`
       })
       store.dispatch('SET_LOGIN_INFO', {token: null, baseInfo: {}, startPolling: false})
@@ -72,11 +72,12 @@ request.interceptors.response.use(res => { // 200开头的
       break
     default:
       Notification.error({
-        title: `接口错误`,
+        title: `提示`,
         message: res.data.msg
       })
       return Promise.resolve({
-        status: res.data.msg
+        status: false,
+        msg: res.data.msg
       })
       // throw new Error(res.data.msg)
       // return {
@@ -107,7 +108,10 @@ request.interceptors.response.use(res => { // 200开头的
       message: `${error.message}`
     })
   }
-  return Promise.resolve(error)
+  return Promise.resolve({
+    status: false,
+    msg: error
+  })
 }
 )
 export default request

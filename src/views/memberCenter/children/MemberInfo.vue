@@ -97,19 +97,22 @@
     </el-row>
     <el-dialog
       :visible.sync="dialogVisible"
+      v-loading="promotionLoading"
       :modal="false"
       width="400px">
-      <div class="title" @click="dialogVisible = false"><i class="el-icon-close"></i></div>
-      <transfer-promote
-        :codeList="codeList"
-        @refresh="getOfferBalance"
-        @fastChose="fastChose"
-        :diaType="offerType"
-        :form="form">
-      </transfer-promote>
-      <div class="command" style="text-align: center">
-        <el-button size="mini" @click="dialogVisible = false">重 置</el-button>
-        <el-button size="mini" type="primary" @click="handleGetOffer">确 认</el-button>
+      <div class="panelBody">
+        <div class="title" @click="dialogVisible = false"><i class="el-icon-close"></i></div>
+        <transfer-promote
+          :codeList="codeList"
+          @refresh="getOfferBalance"
+          @fastChose="fastChose"
+          :diaType="offerType"
+          :form="form">
+        </transfer-promote>
+        <div class="command" style="text-align: center">
+          <el-button size="mini" @click="dialogVisible = false">重 置</el-button>
+          <el-button size="mini" type="primary" @click="handleGetOffer">确 认</el-button>
+        </div>
       </div>
     </el-dialog>
   </div>
@@ -141,6 +144,7 @@ export default {
       },
       dialogVisible: false,
       loading: false,
+      promotionLoading: false,
       codeList: [],
       form: {
         promoteType: 1,
@@ -207,13 +211,13 @@ export default {
     },
     getOfferBalance () { // 获取单独某个钱包的具体余额
       this.get(PATH_GETOFFER_CLIENT, {type: this.offerType}).then(res => {
-        if (res.status) {
+        if (res.status && res.data.length && !res.data.filter(obj => obj.amount < 1).length) {
           this.dialogVisible = true
           this.codeList = res.data
         } else {
           this.$message({
             type: 'warning',
-            message: '暂无可用优惠'
+            message: '暂无可用优惠(金额小于1元不可用)'
           })
         }
       }, err => {
@@ -235,13 +239,17 @@ export default {
         sourceId,
         walletType: this.offerType
       }
+      this.promotionLoading = true
       this.post(PATH_WALLATTOTRANSFOR_PAY, payload).then(res => {
+        this.promotionLoading = false
         if (res.status) {
           if (res.status) {
             this.$message({
               type: 'success',
               message: '恭喜您，转额成功'
             })
+            this.getBalance()
+            this.getOfferBalance()
           } else {
             this.$message({
               type: 'warning',
@@ -351,16 +359,19 @@ export default {
   }
 }
   .el-dialog__body{
-    .title{
-      text-align: right;
-      cursor: pointer;
-      margin-bottom: 30px;
-      i{
-        font-size: 15px;
+    .panelBody{
+      padding: 10px;
+      .title{
+        text-align: right;
+        cursor: pointer;
+        margin-bottom: 30px;
+        i{
+          font-size: 15px;
+        }
       }
-    }
-    .command{
-      margin-bottom: 15px;
+      .command{
+        margin-bottom: 15px;
+      }
     }
   }
 </style>

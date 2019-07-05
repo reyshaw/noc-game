@@ -19,5 +19,5 @@ export default {
     {label: '团队管理', route: 'agent_management'},
     {label: '我的消息', route: 'agent_notices'},
     {label: '我要取款', route: 'agent_withdrawal'},
-    {label: '我的佣金', route: 'withdrawal'}]
+    {label: '我的佣金', route: 'agent_withdrawal'}]
 }

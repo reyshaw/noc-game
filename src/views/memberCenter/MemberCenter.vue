@@ -10,6 +10,7 @@
 <script>
 import MemberInfo from './children/MemberInfo'
 import MemberFunction from './children/MemberFunction'
+import store from '@/store'
 import {mapGetters} from 'vuex'
 export default {
   name: 'member_center',
@@ -23,8 +24,14 @@ export default {
     }
   },
   computed: mapGetters(['ROLE']),
+  beforeRouteEnter (to, from, next) { // 没有登录不让进
+    if (!store.state.token) {
+      next(`/${store.state.role}/index`)
+    } else {
+      next()
+    }
+  },
   beforeRouteUpdate (to, from, next) {
-    // console.log(to.name)
     this.proute = to.name
     next()
   }

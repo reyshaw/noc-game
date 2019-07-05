@@ -1,6 +1,7 @@
 <template>
   <el-scrollbar
     :native="false"
+    ref="scollElement"
     style="height: 100%;width: 100%">
     <div
       id="app"
@@ -8,7 +9,8 @@
       element-loading-text="已经在拼命加载了"
       element-loading-spinner="el-icon-loading"
       element-loading-customClass="loading"
-      element-loading-background="rgba(0, 0, 0, 0.8)">
+      element-loading-background="rgba(0, 0, 0, 0.8)"
+      >
       <router-view/>
     </div>
   </el-scrollbar>
@@ -24,6 +26,13 @@ export default {
     if (this.TOKEN) {
       this.SET_POLLING(true) // 刷新调用轮询接口
     }
+  },
+  updated () { // 切换不同模块时触发
+    this.$nextTick(() => {
+      if (this.$refs.scollElement) { // 滚动元素跳转到顶部
+        this.$refs.scollElement.wrap.scrollTop = 0
+      }
+    })
   },
   methods: mapActions(['SET_POLLING'])
 }

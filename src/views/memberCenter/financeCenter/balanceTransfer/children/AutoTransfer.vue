@@ -5,7 +5,7 @@
         v-for="(item, index) in referencePlatform"
         class="platformItem"
         :key="index">
-        <div class="logo"><img src="http://www.wzsky.net/img2016/uploadimg/20161019/1032510.jpg" alt=""></div>
+        <div class="logo"><img src="http://172.16.135.103/ui/gfx_frontend/slot_games/mg_logo.png" alt=""></div>
         <div class="container">
           <div class="platformName">{{item.cnName}}</div>
           <div class="gameAmount">

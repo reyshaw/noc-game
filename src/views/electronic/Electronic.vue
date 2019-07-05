@@ -44,7 +44,9 @@
               <swiper :options="swiperOption">
                 <swiper-slide v-for="(item, index) in platformList" :key="index">
                   <div :class="{active: active===index, btm:true}" @click="changePlatform(item.id, index)">
-                    <img :src="'http://172.16.135.103/ui/gfx_frontend/slot_games/'+ item.name +'_logo.png'" alt="">
+                    <div>
+                      <img :src="'http://172.16.135.103/ui/gfx_frontend/slot_games/'+ item.name +'_logo.png'" alt="">
+                    </div>
                     <span>{{item.name.toUpperCase()}} 电子</span>
                     <span>{{item.name.toUpperCase()}} CASINO</span>
                   </div>
@@ -117,7 +119,7 @@ import {
   PATH_TAGLIST_GAME,
   PATH_LOGINURL_GAME
 } from '@/service/member/urls.js'
-import {mapGetters} from 'vuex'
+import {mapGetters, mapMutations} from 'vuex'
 
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 
@@ -194,6 +196,8 @@ export default {
     }
   },
   methods: {
+    ...mapMutations('member', ['SET_LOGIN_DIALOG']),
+    ...mapMutations(['SET_LOADING']),
     scrollDs () { // 滚动获取更多游戏
       this.scroll = this.$refs.panelFoot.getBoundingClientRect().top
       if (this.scroll < 750) {
@@ -290,7 +294,9 @@ export default {
           terminalType: '1',
           providerId: this.platformId
         }
+        this.SET_LOADING(true)
         this.post(PATH_LOGINURL_GAME, payload).then((res) => {
+          this.SET_LOADING(true)
           if (res.status) {
             window.open(res.data, '_blank')
           }
@@ -298,10 +304,11 @@ export default {
           this.$message.error(err)
         })
       } else {
-        this.$message({
-          type: 'warning',
-          message: '请先登录'
-        })
+        // this.$message({
+        //   type: 'warning',
+        //   message: '请先登录'
+        // })
+        this.SET_LOGIN_DIALOG(true)
         // this.$store.commit(types.SHOWLOGINDIA, true)
       }
     }
@@ -460,10 +467,17 @@ export default {
                     padding: 10px;
                     border-radius: 5px;
                     background: #182D42;
-                    img{
-                      display: inline-block;
+                    div {
+                      width: 60px;
+                      height: 52px;
                       position: absolute;
-                      left: 10px;
+                      left: 0px;
+                      top: 0px;
+                      display: flex;
+                      align-items: center;
+                      img {
+                        margin: auto;
+                      }
                     }
                     span{
                       display: inline-block;

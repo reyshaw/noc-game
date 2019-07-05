@@ -993,4 +993,325 @@ export default {
     }
   }
 
+  @keyframes left_right_1_x {
+    0% {
+      left: 0%;
+    }
+    100% {
+      left: 150%;
+    }
+  }
+
+  @keyframes left_right_1_y {
+    0% {
+      top: 15%;
+    }
+    30% {
+      top: 16%;
+    }
+    50% {
+      top: 15%;
+    }
+    70% {
+      top: 16%;
+    }
+    100% {
+      top: 15%;
+    }
+  }
+
+  @keyframes left_right_2_x {
+    0% {
+      left: 0%;
+    }
+    100% {
+      left: 150%;
+    }
+  }
+
+  @keyframes left_right_2_y {
+    0% {
+      top: 25%;
+      -webkit-transform: rotateZ(0deg);
+      transform: rotateZ(0deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    25% {
+      -webkit-transform: rotateZ(-20deg);
+      transform: rotateZ(-20deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    50% {
+      top: 0%;
+    }
+    75% {
+      -webkit-transform: rotateZ(10deg);
+      transform: rotateZ(10deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    100% {
+      top: 50%;
+      -webkit-transform: rotateZ(10deg);
+      transform: rotateZ(10deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+  }
+
+  @keyframes left_right_3_x {
+    0% {
+      left: 0%;
+    }
+    100% {
+      left: 150%;
+    }
+  }
+
+  @keyframes left_right_3_y {
+    0% {
+      top: 50%;
+      -webkit-transform: rotateZ(0deg);
+      transform: rotateZ(0deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    25% {
+      top: 80%;
+      -webkit-transform: rotateZ(40deg);
+      transform: rotateZ(40deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    38% {
+      top: 80%;
+      -webkit-transform: rotateZ(0deg);
+      transform: rotateZ(0deg);
+    }
+    50% {
+      top: 80%;
+      -webkit-transform: rotateZ(0deg);
+      transform: rotateZ(0deg);
+    }
+    75% {
+      -webkit-transform: rotateZ(40deg);
+      transform: rotateZ(40deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    100% {
+      top: 25%;
+      -webkit-transform: rotateZ(0deg);
+      transform: rotateZ(0deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+  }
+
+  @keyframes right_left_1_x {
+    0% {
+      left: 0%;
+    }
+    100% {
+      left: 150%;
+    }
+  }
+
+  @keyframes right_left_1_y {
+    0% {
+      top: 75%;
+    }
+    100% {
+      top: 75%;
+    }
+  }
+
+  @keyframes right_left_2_x {
+    0% {
+      left: 0%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  @keyframes right_left_2_y {
+    0% {
+      top: 100%;
+      -webkit-transform: rotateZ(0deg);
+      transform: rotateZ(0deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    25% {
+      -webkit-transform: rotateZ(-20deg);
+      transform: rotateZ(-20deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    50% {
+      top: 0%;
+    }
+    75% {
+      -webkit-transform: rotateZ(20deg);
+      transform: rotateZ(20deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    100% {
+      top: 100%;
+      -webkit-transform: rotateZ(90deg);
+      transform: rotateZ(90deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+  }
+
+  @keyframes right_left_3_x {
+    0% {
+      left: 0%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  @keyframes right_left_3_y {
+    0% {
+      top: 50%;
+      -webkit-transform: rotateZ(0deg);
+      transform: rotateZ(0deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    25% {
+      -webkit-transform: rotateZ(20deg);
+      transform: rotateZ(20deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    50% {
+      top: 90%;
+    }
+    75% {
+      -webkit-transform: rotateZ(-20deg);
+      transform: rotateZ(-20deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    100% {
+      top: 50%;
+      -webkit-transform: rotateZ(-50deg);
+      transform: rotateZ(-50deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+  }
+
+  @keyframes right_left_4_x {
+    0% {
+      left: 0%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+
+  @keyframes right_left_4_y {
+    0% {
+      top: 50%;
+      -webkit-transform: rotateZ(0deg);
+      transform: rotateZ(0deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    25% {
+      -webkit-transform: rotateZ(20deg);
+      transform: rotateZ(20deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    50% {
+      top: 90%;
+    }
+    75% {
+      -webkit-transform: rotateZ(-20deg);
+      transform: rotateZ(-20deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+    100% {
+      top: 50%;
+      -webkit-transform: rotateZ(0deg);
+      transform: rotateZ(0deg);
+      -webkit-transform-origin: 0% 0%;
+      transform-origin: 0% 0%;
+    }
+  }
+
+  @keyframes fish_1_play {
+    0% {
+      background-position: 0 0
+    }
+    100% {
+      background-position: 0 -148px
+    }
+  }
+
+  @keyframes fish_2_play {
+    0% {
+      background-position: 0 0
+    }
+    100% {
+      background-position: 0 -256px
+    }
+  }
+
+  @keyframes fish_6_play {
+    0% {
+      background-position: 0 0
+    }
+    100% {
+      background-position: 0 -632px
+    }
+  }
+
+  @keyframes fish_7_play {
+    0% {
+      background-position: 0 0
+    }
+    100% {
+      background-position: 0 -906px
+    }
+  }
+
+  @keyframes fish_8_play {
+    0% {
+      background-position: 0 0
+    }
+    100% {
+      background-position: 0 -1008px
+    }
+  }
+
+  @keyframes fish_9_play {
+    0% {
+      background-position: 0 0
+    }
+    100% {
+      background-position: 0 -1464px
+    }
+  }
+
+  @keyframes fish_10_play {
+    0% {
+      background-position: 0 0
+    }
+    100% {
+      background-position: 0 -1122px
+    }
+  }
+
 </style>

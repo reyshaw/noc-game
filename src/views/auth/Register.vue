@@ -91,6 +91,7 @@
 <script>
 import {
   PATH_REGISTER_MEMBER,
+  PATH_REGISTER_AGENT,
   PATH_VERIFYCODE_IMAGE,
   PATH_MEMBERLOGIN_LOGIN,
   PATH_SEND_EMAIL
@@ -214,7 +215,7 @@ export default {
     this.updateImgUrl()
   },
   computed: {
-    ...mapGetters(['CONFIG'])
+    ...mapGetters(['CONFIG', 'ROLE'])
   },
   mounted () {
     window.addEventListener('scroll', this.scrollDs, true)
@@ -400,18 +401,28 @@ export default {
       })
     },
     hanleRegister () { // 5 注册发起
+      let path = PATH_REGISTER_MEMBER
+      if (this.ROLE === 'agent') {
+        path = PATH_REGISTER_AGENT
+      }
       const payload = {
         ...this.form,
-        memberDateBirth: formatDate(this.form.memberDateBirth)
+        birthDate: formatDate(this.form.birthDate)
       }
-      this.post(PATH_REGISTER_MEMBER, payload, this.headers).then(res => { // 获取配置参数
+      this.post(path, payload, this.headers).then(res => { // 获取配置参数
         // console.log(res.status)
         if (res.status) {
           this.$store.commit('SET_TOKEN', res.data.token)
           this.$store.commit('SET_BASE_INFO', res.data.profile)
           this.$message('恭喜您，注册成功！')
+          let path
+          if (this.ROLE === 'agent') {
+            path = this.ROLE + '_index'
+          } else {
+            path = 'index'
+          }
           this.$router.push({
-            name: 'index',
+            name: path,
             params: 'login'
           })
           // this.memberInfo = res.data.profile

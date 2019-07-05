@@ -16,6 +16,7 @@ export const PATH_TRANSFER_PAY = OGWLS_PAY + '/member/transfer/transfer' // 上�
 export const PATH_GAMEPLATFORM_PAY = OGWLS_GAME_API + '/member/game/game-providers/1' // 平台列表
 export const PATH_BALANCE_PAY = OGWLS_USER_CLIENT + '/member/transfer/balance' // 获取平台余额
 export const PATH_WALLATBALANCE_PAY = OGWLS_USER_CLIENT + '/member/getBalance' // 获取钱包余额
+export const PATH_MEMBERTRANSFERCOUPON_PAY = OGWLS_USER_CLIENT + '/record/memberTransferCoupon' // 获取钱包余额
 export const PATH_WALLATTOTRANSFOR_PAY = OGWLS_USER_CLIENT + '/member/transfer/transferOut' // 从钱包转出平台
 export const PATH_TRANSFOR_PAY = OGWLS_USER_CLIENT + '/member/transfer/interTransformation' // 平台互转
 export const PATH_TRANSFORTOWALLAT_PAY = OGWLS_USER_CLIENT + '/member/transfer/transferIn' // 从平台转入钱包

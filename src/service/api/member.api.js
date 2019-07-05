@@ -1,6 +1,6 @@
 import {post} from '../methods'
 import {PATH_INDEX_GAME} from '../member/urls'
-import store from '@/store/share.store'
+import store from '@/store'
 import CONST from '@/assets/consts/global'
 
 export const getIndexGameList = () => {

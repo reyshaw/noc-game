@@ -19,7 +19,9 @@
                 </el-select>
               </el-form-item>
               <el-form-item label="取款金额">
-                <el-input v-model.number="form.withdrawalAmount" placeholder="请输入取款金额" size="mini" :style="inputStyle"></el-input>
+                <el-input :rules="[
+      { type: 'number', message: '取款金额必须为数字值'}
+    ]" v-model="form.withdrawalAmount" placeholder="请输入取款金额" size="mini" :style="inputStyle"></el-input>
               </el-form-item>
               <el-form-item label="取款密码">
                 <el-input type="password" v-model="form.withdrawPassword" placeholder="请输入取款密码" size="mini" :style="inputStyle"></el-input>
@@ -142,11 +144,6 @@ export default {
                 this.$message({
                   type: 'success',
                   message: '恭喜您取款申请已发起，请稍后注意查询您的账户！'
-                })
-              } else {
-                this.$message({
-                  type: 'warning',
-                  message: '系统错误请联系管理员'
                 })
               }
             }, err => {

@@ -10,7 +10,7 @@
             :key="index"
             v-loading="isloading[index]"
             @click="handleCheck(item, index, 0)">
-            <div class="logo"><img src="http://www.wzsky.net/img2016/uploadimg/20161019/1032510.jpg" alt=""></div>
+            <div class="logo"><img src="http://172.16.135.103/ui/gfx_frontend/slot_games/mg_logo.png" alt=""></div>
             <div class="container">
               <div class="platformName">{{item.cnName}}</div>
               <div class="gameAmount">
@@ -29,7 +29,7 @@
           :class="{platformItem:true,checkedPlatform:activeIndex1 === index}"
           :key="index"
           @click="handleCheck(item, index, 1)">
-            <div class="logo"><img src="http://www.wzsky.net/img2016/uploadimg/20161019/1032510.jpg" alt=""></div>
+            <div class="logo"><img src="http://172.16.135.103/ui/gfx_frontend/slot_games/mg_logo.png" alt=""></div>
             <div class="container">
               <div class="platformName">{{item.cnName}}</div>
               <div class="gameAmount">
@@ -43,15 +43,15 @@
       </step>
       <step :stepNumber="3" titleContent="请填写转换金额">
         <div class="addAmount">
-          <div class="couponList">
+          <div class="couponList"  v-if="showPromote && promotionList.length">
             <div
               :class="{coupon:true,choose: activeCoupon === index}"
               v-for="(item, index) in promotionList" :key="index"
               @click="selectCoupon(item,index)">
-              <div class="give">￥{{item.give}}</div>
+              <div class="give">￥{{item.totalGiftAmount}}</div>
               <div class="sumup">
                 <span>优惠券</span>
-                <span>存{{item.sumup}}送</span>
+                <span>存{{item.transferAmount}}元送</span>
               </div>
             </div>
           </div>
@@ -60,7 +60,7 @@
               <el-input v-model.trim.number="form.balance" size="mini" placeholder="*范围1-50000元" style="width: 215px">
                 <template slot="append">元</template>
               </el-input>
-              <el-tag v-if="codeAmount" style="margin-left: 10px;" class="el-icon-warning" type="warning">您选择该优惠后需要完成{{this.codeAmount}}的有效投注</el-tag>
+              <el-tag v-if="codeAmount" style="margin-left: 10px;" class="el-icon-warning" type="warning">充值金额，有效投注不得小于{{this.codeAmount}}元</el-tag>
             </el-form-item>
             <el-form-item>
               <el-button type="info" size="mini">重置</el-button>
@@ -78,6 +78,7 @@ import { PATH_GAMEPLATFORM_PAY,
   PATH_BALANCE_PAY,
   PATH_WALLATTOTRANSFOR_PAY,
   PATH_TRANSFOR_PAY,
+  PATH_MEMBERTRANSFERCOUPON_PAY,
   PATH_TRANSFORTOWALLAT_PAY,
   PATH_WALLATBALANCE_PAY
 } from '@/service/member/member_center.url'
@@ -100,28 +101,35 @@ export default {
       amountStatus: [], // 资金显示状态
       activeCoupon: '', // 优惠券选用状态
       codeAmount: '', // 所需打码量
+      showPromote: false, // 上分显示优惠
       form: {
         reference: '',
         object: '',
         balance: '',
         promoteType: ''
       },
-      promotionList: [
-        { label: 0, sumup: 100, give: '50' },
-        { label: 0, sumup: 200, give: '150' },
-        { label: 0, sumup: 300, give: '300' },
-        { label: 0, sumup: 500, give: '600' },
-        { label: 0, sumup: 800, give: '800' }
-      ]
+      promoteId: undefined,
+      promotionList: []
     }
   },
   mounted () {
     this.getPlatform()
+    this.getPromote()
   },
   methods: {
+    getPromote () {
+      this.get(PATH_MEMBERTRANSFERCOUPON_PAY, {}).then(res => {
+        if (res.status) {
+          this.promotionList = res.data
+        }
+      }, err => {
+        console.log(err)
+      })
+    },
     selectCoupon (i, ind) {
       this.activeCoupon = ind
-      this.codeAmount = i.sumup * 7.5
+      this.promoteId = i.id
+      this.codeAmount = i.transferAmount
     },
     handleCheck (item, i, a) {
       if (a) {
@@ -133,6 +141,8 @@ export default {
         this.form.reference = item // 拿到来源账户
         // console.log(this.form)
       }
+      console.log(111, this.promotionList)
+      this.showPromote = this.activeIndex === 0 && this.activeIndex1 !== 0
     },
     getPlatform () {
       this.get(PATH_GAMEPLATFORM_PAY, {}).then(res => { // 查询所有平台列表
@@ -157,19 +167,19 @@ export default {
           toProvidersId: item.id
         }
       }
-      this.isloading[i] = true // 刷新按钮选择开始
+      this.$set(this.isloading, i, true) // 刷新按钮选择开始
       this.$set(this.referencePlatform[i], 'status', '正在加载中') // 状态提示开始
       this.post(path, payload).then(res => {
+        if (res.status) {
+          if (i === 0) { // 判断是否是钱包余额还是平台余额
+            this.$set(this.referencePlatform[i], 'amount', parseFloat(res.data.amount).toFixed(2))
+          } else {
+            this.$set(this.referencePlatform[i], 'amount', parseFloat(res.data).toFixed(2))
+          }
+        }
         this.$set(this.isloading, i, false) // 刷新按钮选择结束
         this.$set(this.referencePlatform[i], 'status', '') // 状态提示开始
         this.$set(this.amountStatus, i, true) // 刷新按钮选择结束
-        if (i === 0) { // 判断是否是钱包余额还是平台余额
-          // console.log(1, res)
-          this.$set(this.referencePlatform[i], 'amount', parseFloat(res.data.amount).toFixed(2))
-        } else {
-          this.$set(this.referencePlatform[i], 'amount', parseFloat(res.data).toFixed(2))
-          // console.log(res)
-        }
       }, err => {
         this.$message.error(err)
       })
@@ -184,6 +194,7 @@ export default {
               if (this.form.reference.id === '0') {
                 payload = {
                   balance: this.form.balance,
+                  sourceId: this.promoteId,
                   toProviderCode: this.form.object.code,
                   toProvidersId: this.form.object.id,
                   walletType: 8

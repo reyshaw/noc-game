@@ -9,7 +9,8 @@ let baseImgUrl = process.env.BASE_URL + OGWLS_USER_CLIENT
 /** ------------------------------ 注册登陆(auth) ---------------------------- **/
 export const PATH_GETITEMS_REGISTER = OGWLS_USER_CLIENT + '/manage/systemMemberRegisterConfig/memberRegisterConfigList' // 获取注册配置项
 export const PATH_SEND_EMAIL = OGWLS_USER_CLIENT + '/sendEmail' // 注册接口发送邮箱
-export const PATH_REGISTER_MEMBER = OGWLS_USER_CLIENT + '/manage/login/registerMember' // 注册接口
+export const PATH_REGISTER_MEMBER = OGWLS_USER_CLIENT + '/manage/login/registerMember' // 会员注册接口
+export const PATH_REGISTER_AGENT = OGWLS_USER_CLIENT + '/manage/login/registerAgent' // 代理注册接口
 export const PATH_VERIFYTYPE_LIST = OGWLS_USER_CLIENT + '/manage/systemVerifycodeManagement/verifycodeManagementList' // 获取验证码类型
 export const PATH_VERIFYCODE_IMAGE = baseImgUrl + '/manage/verify/captchaImage' // 获取图片验证码路径
 export const PATH_SELECTPAYCONFIG_PAY = OGWLS_USER_CLIENT + '/manage/pay/selectPayConfig' // 会员支付配置信息查询

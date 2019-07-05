@@ -17,16 +17,28 @@
           border
           v-loading="loading">
           <el-table-column prop="lotteryTitle" label="活动名称"></el-table-column>
-          <el-table-column prop="lotteryTitle" label="面值额度"></el-table-column>
+          <el-table-column prop="totalGiftAmount" label="面值额度">
+            <template slot-scope="scope">
+              <span>￥{{scope.row.totalGiftAmount | formatMoney}}</span>
+            </template>
+          </el-table-column>
           <el-table-column prop="expiredEndTime" label="到期时间"></el-table-column>
           <el-table-column
             prop="type"
             label="全部类型"
             :filters="CONFIG.TYPE"
             :filter-method="filterHandler"
-          ></el-table-column>
-          <el-table-column prop="audit" label="筹码稽核"></el-table-column>
-          <el-table-column prop="operate" label="操作"></el-table-column>
+          >
+            <template slot-scope="scope">
+              <span>{{parseInt(scope.row.useFlag) === 0 ? '未使用' : '已使用'}}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="lotteryAuditing" label="筹码稽核(打码倍数)"></el-table-column>
+          <el-table-column prop="operate" label="操作">
+            <template slot-scope="scope">
+              <el-button type="text" :disabled="!!parseInt(scope.row.useFlag)">使用</el-button>
+            </template>
+          </el-table-column>
         </el-table>
       </el-scrollbar>
     </main>
@@ -63,10 +75,9 @@ export default {
       listURL: PATH_GETCOUPON_CLIENT,
       CONFIG: {
         TYPE: [
-          {value: 0, text: '全部'},
-          {value: 1, text: '未使用'},
-          {value: 2, text: '已使用'},
-          {value: 3, text: '已过期'}
+          {value: '0', text: '未使用'},
+          {value: '1', text: '已使用'},
+          {value: '2', text: '已过期'}
         ]
       },
       extraData: {

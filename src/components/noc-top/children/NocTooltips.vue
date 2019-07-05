@@ -14,9 +14,9 @@
       </vue-seamless>
     </div>
     <div class="homeLogin" v-if="!TOKEN">
-      <div><input type="text" v-model="memberAccount" placeholder="会员账号"><span class="forgetPwd" @click="showNotice">忘记?</span></div>
-      <div><input type="password" v-model="memberPassword" placeholder="登录密码"><span class="forgetPwd" @click="showNotice">忘记?</span></div>
-      <div class="verifyCode" v-if="!USER_CONFIG.verifyCodeShowStatus">
+      <div><input type="text" v-model="memberAccount" placeholder="会员账号" @keyup.enter="memberPassword ? loginNow() : pwdfocus = true"><span class="forgetPwd" @click="showNotice">忘记?</span></div>
+      <div><input type="password" v-model="memberPassword" placeholder="登录密码" v-focus="pwdfocus" @keyup.enter="loginNow"><span class="forgetPwd" @click="showNotice">忘记?</span></div>
+      <div class="verifyCode" v-if="!USER_CONFIG.verifyCodeShowStatus && false"><!--这里需要统一字段，现在是硬编码隐藏--->
         <input type="text" ref="verifyInput" v-model="verifyCode" @blur="ifFocus = false" @focus="focus" v-focus="ifFocus" placeholder="请输入验证码">
         <div class="verifyCodeImg"><img :src="imgUrl" alt="验证码" @click="updateImgUrl"></div>
       </div>
@@ -28,7 +28,7 @@
         <li>{{BASE_INFO.memberRealName}}</li>
         <li v-for="(shortcut, idx) in shortcuts" :key="idx">
           <a href="javascript:void(0);" @click="jumpTo(`${shortcut.route}`)">{{shortcut.label}}
-            <span class="badge" v-if="shortcut.label==='我的消息' && BASE_INFO.totalSystemMsg">{{GET_MSG_COUNT.totalSystemMsg}}</span>
+            <span class="badge" v-if="shortcut.label==='我的消息' && MSG_COUNT">{{MSG_COUNT}}</span>
           </a>
         </li>
         <li>
@@ -87,8 +87,8 @@ export default {
   data () {
     return {
       ifFocus: false, // 是否聚焦
-      memberAccount: 'dl003', // 设置默认
-      memberPassword: '123456', // 默认密码
+      memberAccount: 'steven', // 设置默认
+      memberPassword: '123123', // 默认密码
       verifyCode: '',
       imgUrl: '',
       headers: {
@@ -103,11 +103,12 @@ export default {
       oneTime: false,
       loading: [],
       recoveryLoading: false,
-      loading1: []
+      loading1: [],
+      pwdfocus: false
     }
   },
   computed: {
-    ...mapGetters(['TOKEN', 'BASE_INFO', 'ROLE', 'GET_MSG_COUNT']), // 'GET_MSG_COUNT'
+    ...mapGetters(['TOKEN', 'BASE_INFO', 'ROLE', 'MSG_COUNT']),
     ...mapGetters({
       USER_CONFIG: 'CONFIG'
     }),
@@ -229,6 +230,10 @@ export default {
       }
       const path = PATH_RECOVERY_PAY
       this.$set(this.loading1, i, true) // 刷新按钮选择开始
+      this.$notify.success({
+        title: '获取数据',
+        message: '目前正在回收余额请稍后查看'
+      })
       this.get(path, payload).then(res => {
         this.$set(this.loading1, i, false) // 刷新按钮选择开始
         if (res.status) {
@@ -239,10 +244,18 @@ export default {
         }
       }, err => {
         this.$message.error(err)
+        this.$notify.success({
+          title: '回收失败',
+          message: '目前该平台正在维护'
+        })
       })
     },
     handleRecovery () { // 一键回收
       this.recoveryLoading = true
+      this.$notify.success({
+        title: '获取数据',
+        message: '目前正在回收余额请稍后查看'
+      })
       this.get(PATH_RECOVERY_PAY, {}).then(res => {
         this.recoveryLoading = false
         if (res.status) {
@@ -257,11 +270,11 @@ export default {
           })
         }
       }, err => {
-        this.$message.error(err)
+        console.log(err)
         this.recoveryLoading = false
-        this.$message({
-          type: 'danger',
-          message: '请求超时请重新请求'
+        this.$notify.success({
+          title: '回收失败',
+          message: '部分平台正在维护，请手动回收资金'
         })
       })
     },

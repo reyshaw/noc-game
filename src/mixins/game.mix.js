@@ -24,6 +24,7 @@ const gameMix = {
   },
   methods: {
     ...mapMutations('member', ['SET_LOGIN_DIALOG']),
+    ...mapMutations(['SET_LOADING']),
     async getPlatformUrl (category) { // 直接进游戏平台方法
       const payload = {
         category,
@@ -84,7 +85,9 @@ const gameMix = {
           terminalType: '1',
           providerId: this.platformIdList[i]
         }
+        this.SET_LOADING(true)
         await this.post(PATH_LOGINURL_GAME, payload).then((res) => {
+          this.SET_LOADING(false)
           if (res.status) {
             window.open(res.data, '_blank')
           }
