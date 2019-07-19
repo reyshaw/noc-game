@@ -57,7 +57,8 @@ export default {
   }
 }
 </script>
-<style>
+<style lang="scss" scoped>
+  @import "~@/assets/styles/global";
   .number-grow-warp{
     transform: translateZ(0);
     width: 100%;
@@ -68,7 +69,7 @@ export default {
     font-family: "Microsoft YaHei";
     font-weight: 700;
     font-size: 18px;
-    color: #000;
+    color: $--color-text-primary;
     margin:66px 0 20px;
     display: block;
     line-height:64px;

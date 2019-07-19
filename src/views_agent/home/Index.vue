@@ -3,7 +3,7 @@
     <section class="home-content">
       <h1></h1>
       <div class="home-banner">
-        <slider _height="670"></slider>
+        <slider></slider>
       </div>
       <contact></contact>
     </section>

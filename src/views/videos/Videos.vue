@@ -2,11 +2,7 @@
   <div class="wrapper">
     <div class="banner">
       <div class="block">
-        <el-carousel height="400px">
-          <el-carousel-item v-for="item in 4" :key="item">
-            <img src="http://172.16.135.103/ui/gfx_frontend/live_game/banner.png" alt="" style="width: 100%;height: 100%;min-width: 1650px;">
-          </el-carousel-item>
-        </el-carousel>
+        <slider :imgURLS="imgURLS"></slider>
       </div>
     </div>
     <div class="content">
@@ -24,7 +20,7 @@
               {{item.intro}}
             </div>
             <div class="operate">
-              <button @click="enterGame(item.games[0].gameId, index)">立即游戏</button>
+              <button @click="enterGame(item.games[0].gameId, platformIdList[index])">立即游戏</button>
               <button>试玩体验</button>
             </div>
           </div>
@@ -40,13 +36,24 @@
 
 <script>
 import gameMix from '@/mixins/game.mix'
+import Slider from '@/components/slider'
 
 export default {
   name: 'videos',
   mixins: [gameMix],
+  components: {
+    Slider
+  },
   data () {
     return {
       platformList: [
+      ],
+      imgURLS: [
+        'http://172.16.135.103/ui/gfx_frontend/live_game/banner.png',
+        'http://172.16.135.103/ui/gfx_frontend/live_game/banner.png',
+        'http://172.16.135.103/ui/gfx_frontend/live_game/banner.png',
+        'http://172.16.135.103/ui/gfx_frontend/live_game/banner.png',
+        'http://172.16.135.103/ui/gfx_frontend/live_game/banner.png'
       ]
     }
   },

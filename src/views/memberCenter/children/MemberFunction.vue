@@ -1,5 +1,5 @@
 <template>
-  <div class="main">
+  <div class="main member_main">
     <el-row>
       <el-col :span="2">
         <div v-for="(item, index) in sideMenu" :key="index">
@@ -60,31 +60,52 @@ export default {
   }
 }
 </script>
-
 <style scoped lang="scss">
 .main{
-  margin-left: 5.5px;
+  // margin-left: 5.5px;
   margin-top: 10px;
+  .el-row {
+    display: flex;
+    // align-items: stretch;
+  }
   .el-col-2{
-    padding-bottom: 1000px;
-    margin-bottom: -990px;
+    background-color: #DCE4FA;
+    // padding-bottom: 1000px;
+    // margin-bottom: -990px;
+    >div {
+      background: #ffffff;
+      position: relative;
+      .card {
+        &::before {
+          content: "";
+          position: absolute;
+          left: 0px;
+          top: -10px;
+          width: 100%;
+          height: 10px;
+          background: #ffffff;
+        }
+      }
+    }
   }
   .el-col-22{
-    padding-bottom: 1000px;
-    margin-bottom: -990px;
+    // padding-bottom: 1000px;
+    // margin-bottom: -990px;
+    padding-bottom: 10px;
   }
   .operateInterface{
     background-color: #DCE4FA;
     margin-left: 10px;
-    margin-right: 5.5px;
+    // margin-right: 5.5px;
     text-align: left!important;
     /*min-height: 64.3rem;*/
-    min-height: 750px;
-    overflow: hidden;
+    // min-height: 750px;
+    min-height: calc(100% - 60px);
+    overflow: auto;
   }
   .contentTitle{
     margin-left: 10px;
-    margin-right: 5.5px;
+    // margin-right: 5.5px;
     text-align: left!important;
     position: relative;
     padding-left: 10px;
@@ -104,14 +125,19 @@ export default {
     background-color: #DCE4FA;
     overflow: hidden;
     margin-bottom: 10px;
-    padding: 20px 20px;
     font-size: 16px;
     text-align: center;
     font-weight: 700;
+    &:not(.contentTitle) {
+      padding: 20px 0px;
+    }
+    &.contentTitle {
+      padding: 20px 20px;
+    }
     ul{
       li{
         font-weight: 400;
-        line-height: 2.2rem;
+        line-height: 3rem;
         text-align: center;
         a{
           font-size: 14px;
@@ -121,6 +147,11 @@ export default {
           }
           &.active{
             font-weight: bold;
+            border-left: 2px solid #2c3568;
+            display: inline-block;
+            width: 100%;
+            height: 100%;
+            background-color: #c4cee8;
           }
         }
       }
@@ -128,4 +159,13 @@ export default {
   }
 }
 
+</style>
+<style lang="scss">
+  .main.member_main{
+    .el-col-22{
+      .el-tabs__content{
+        padding: 10px 20px;
+      }
+    }
+  }
 </style>

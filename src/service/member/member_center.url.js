@@ -2,7 +2,7 @@ import {
   OGWLS_USER_CLIENT,
   OGWLS_GAME_API,
   OGWLS_PAY
-} from '@/service/prefix.path'
+} from '@/service/req.getway'
 
 /** 财务中心(pay) **/
 export const PATH_SELECTPAYCONFIG_PAY = OGWLS_USER_CLIENT + '/manage/pay/selectPayConfig' // 所有支付渠道配置列表

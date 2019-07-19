@@ -1,16 +1,16 @@
 <template>
   <div class="layoutWrapper">
     <noc-top></noc-top>
-    <div class="content" :style="{top: !loginForm ? '128px' : '173px'}">
+    <div class="content">
       <router-view />
     </div>
-    <noc-bottom :style="{marginTop: !loginForm ? '-45px' : 0}"></noc-bottom>
+    <noc-bottom></noc-bottom>
   </div>
 </template>
 
 <script>
-import NocTop from '@/components/noc-top/NocTop'
-import NocBottom from '@/components/noc-bottom/NocBottom'
+import NocTop from '@/components/noc_top/NocTop'
+import NocBottom from '@/components/noc_bottom/NocBottom'
 import {mapGetters} from 'vuex'
 export default {
   name: 'layout',
@@ -46,7 +46,6 @@ export default {
     .content {
       position: relative;
       overflow: hidden;
-      top: 173px;
     }
   }
 </style>

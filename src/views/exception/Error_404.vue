@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <div style="font-size: 50px; text-align: center;">404</div>
+  <div class="404">
+    <div class="logo"></div>
   </div>
 </template>
 

@@ -1,5 +1,5 @@
 import types from './member.types'
-import {getIndexGameList} from '@/service/api/member.api'
+import {getIndexGameList} from '@/service/member/member.api'
 import {sort} from '@/assets/scripts/utils'
 import homeConfig from '@/views/home/home.config'
 
@@ -16,15 +16,10 @@ const member = {
     [types.REGISTER_DIALOG]: state => state.showRegisterDialog
   },
   actions: {
-    [types.SET_GAME_CATEGORIES]: ({state, commit}) => {
+    [types.SET_GAME_CATEGORIES]: async ({state, commit}) => {
       if (!state.gameCategroies.length) {
-        getIndexGameList().then(res => {
-          if (res && res.data) {
-            commit(types.SET_GAME_CATEGORIES, sort(res.data, homeConfig.arrRule))
-          }
-        }, err => {
-          throw new Error(err)
-        })
+        const { status, data } = await getIndexGameList()
+        status && commit(types.SET_GAME_CATEGORIES, sort(data, homeConfig.arrRule))
       }
     }
   },

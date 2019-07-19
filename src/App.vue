@@ -18,7 +18,6 @@
 
 <script>
 import { mapGetters, mapActions } from 'vuex'
-// import {isEmptyObject} from '@/assets/scripts/utils'
 export default {
   name: 'App',
   computed: mapGetters(['LOADING', 'TOKEN', 'CONFIG']),

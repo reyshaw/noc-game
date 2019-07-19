@@ -1,0 +1,14 @@
+$--color-text-primary: #000 !default; // 主色调黑色，主要是文字
+$--color-white: #fff !default; // 白色
+$--color-primary: #3d0335 !default; // 紫色
+
+/*-----------------------------------自定义-----------------------------------*/
+:root {
+    --color-login-bg: #3d0335;
+}
+
+$_color_login_bg: var(--color-login-bg);
+
+@mixin color-login-bg {
+    background-color: $_color_login_bg;
+}

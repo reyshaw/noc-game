@@ -69,7 +69,7 @@
 <script>
 import { PATH_CHANGE_PROFILE } from '@/service/member/member_center.url'
 import {mapGetters} from 'vuex'
-// import types from '@/store/share.types'
+// import types from '@/store/modules/share.types'
 export default {
   name: 'personal_data',
   data () {

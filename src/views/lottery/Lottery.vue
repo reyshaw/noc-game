@@ -9,10 +9,10 @@
         </ul>
       </div>
       <div class="container">
-        <div class="setting">
+        <!--<div class="setting">
           <span>自定义</span>
           <img src="http://172.16.135.103/ui/gfx_frontend/lottery/setting.png" alt="">
-        </div>
+        </div>-->
         <div class="lotterPanel animated flipInX" v-for="(item, index) in lotteryPanelList" :key="index">
           <div class="panel">
             <div class="img">
@@ -62,16 +62,17 @@ export default {
   data () {
     return {
       tags: [
-        {title: '全部'},
+        {title: '所有彩票'},
+        {title: '棋牌彩'},
         {title: '即开彩'},
         {title: '时时彩'},
-        {title: 'PK10'},
+        {title: 'PK0'},
         {title: '六合彩'},
         {title: '快乐十分'},
         {title: 'PC蛋蛋'},
-        {title: '快3'},
         {title: '十一选五'},
-        {title: '快乐8'}
+        {title: '快乐8'},
+        {title: '快3'}
       ],
       lotteryPanelList: [
         {imgUrl: '0', gameName: '香港六合彩', period: '2019-031', hot: true, time: {days: '00', hours: '00', min: '15', sec: '42'}},
@@ -102,6 +103,7 @@ export default {
 </script>
 
 <style scoped lang="scss">
+@import "~@/assets/styles/global";
 .wrapper{
   width: 100%;
   max-width: 1920px;
@@ -231,7 +233,7 @@ export default {
                     line-height: 30px;
                     text-align: center;
                     display: block;
-                    background: #000;
+                    background: $--color-text-primary;
                     margin: 2.5px;
                     color: white;
                     padding: 0 5px;
@@ -244,7 +246,7 @@ export default {
                       position: absolute;
                       left:39px;
                       font-weight: bold;
-                      color: #000;
+                      color: $--color-text-primary;
                       top: 0;
                     }
                   }
@@ -280,8 +282,8 @@ export default {
         }
         &:hover{
           transform: translateY(-5px);
-          box-shadow: 15px 0 15px -15px #000,
-          -15px 0 15px -15px #000;
+          box-shadow: 15px 0 15px -15px $--color-text-primary,
+          -15px 0 15px -15px $--color-text-primary;
         }
         &:before{
           content: '';

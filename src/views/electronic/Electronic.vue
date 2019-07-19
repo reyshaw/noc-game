@@ -1,20 +1,14 @@
 <template>
   <div class="wrapper">
     <div class="banner">
-      <div class="block">
-        <el-carousel height="400px">
-          <el-carousel-item v-for="item in 4" :key="item">
-            <img src="../../assets/imgs/electric/banner.png" alt="" style="width: 100%;height: 100%;min-width: 1650px;">
-          </el-carousel-item>
-        </el-carousel>
-      </div>
+      <slider :imgURLS="imgURLS"></slider>
     </div>
     <div class="content">
-      <div class="tray"><img src="../../assets/imgs/electric/layer.png" alt="" style="width: 100%;height: 100%;min-width: 1650px;"></div>
+      <div class="tray"><img src="http://172.16.135.103/ui/gfx_frontend/slot_games/layer.png" alt="" style="width: 100%;height: 100%;min-width: 1650px;"></div>
       <div class="container">
         <div class="hotGameIcon">
-          <p><img src="../../assets/imgs/electric/hotGameTitle.gif" alt=""></p>
-          <p><img src="../../assets/imgs/electric/lightLine.gif" alt=""></p>
+          <p><img src="http://172.16.135.103/ui/gfx_frontend/slot_games/hotGameTitle.gif" alt=""></p>
+          <p><img src="http://172.16.135.103/ui/gfx_frontend/slot_games/lightLine.gif" alt=""></p>
         </div>
         <div class="hotGame">
           <ul>
@@ -107,6 +101,15 @@
         </el-carousel>
       </div>
     </div>
+    <el-dialog
+      title="提示"
+      :visible.sync="dialogVisible"
+      :close-on-click-modal="false"
+      width="90%">
+      <div class="gamePopupr" ref="gamePopupr">
+        <i class="el-icon-error close" @click="closeGameDialog"></i>
+      </div>
+    </el-dialog>
   </div>
 </template>
 
@@ -120,13 +123,14 @@ import {
   PATH_LOGINURL_GAME
 } from '@/service/member/urls.js'
 import {mapGetters, mapMutations} from 'vuex'
-
+import Slider from '@/components/slider'
 import { swiper, swiperSlide } from 'vue-awesome-swiper'
 
 export default {
   name: 'electronic',
   components: {
     CountTo,
+    Slider,
     swiper,
     swiperSlide
   },
@@ -146,6 +150,13 @@ export default {
         {memberName: '6零四章', platform: 'CQ9', game: '疯狂的猴子', bet: '20000', val: '100000'},
         {memberName: '7零四章', platform: 'CQ9', game: '疯狂的猴子', bet: '20000', val: '100000'},
         {memberName: '7零四章', platform: 'CQ9', game: '疯狂的猴子', bet: '20000', val: '100000'}
+      ],
+      imgURLS: [
+        'http://172.16.135.103/ui/gfx_frontend/slot_games/banner.png',
+        'http://172.16.135.103/ui/gfx_frontend/slot_games/banner.png',
+        'http://172.16.135.103/ui/gfx_frontend/slot_games/banner.png',
+        'http://172.16.135.103/ui/gfx_frontend/slot_games/banner.png',
+        'http://172.16.135.103/ui/gfx_frontend/slot_games/banner.png'
       ],
       hotGames: [
         {imgUrl: 'https://og-middleware.s3.amazonaws.com/images/og/oglive.png', gameName: 'og视讯'},
@@ -179,7 +190,9 @@ export default {
           nextEl: '.swiper-button-next',
           prevEl: '.swiper-button-prev'
         }
-      }
+      },
+      dialogVisible: false,
+      iframe: undefined
     }
   },
   created () {
@@ -298,7 +311,11 @@ export default {
         this.post(PATH_LOGINURL_GAME, payload).then((res) => {
           this.SET_LOADING(true)
           if (res.status) {
-            window.open(res.data, '_blank')
+            // window.open(res.data, '_blank')
+            this.dialogVisible = true
+            this.$nextTick(() => {
+              this.iframe = this.createIframe(this.$refs.gamePopupr, res.data)
+            })
           }
         }, err => {
           this.$message.error(err)
@@ -311,6 +328,49 @@ export default {
         this.SET_LOGIN_DIALOG(true)
         // this.$store.commit(types.SHOWLOGINDIA, true)
       }
+    },
+    createIframe (dom, src, onload) {
+      // 在document中创建iframe
+      console.log(dom)
+      var iframe = document.createElement('iframe')
+
+      // 设置iframe的样式
+      iframe.style.width = '100%'
+      iframe.style.height = '100%'
+      iframe.style.margin = '0'
+      iframe.style.padding = '0'
+      iframe.style.overflow = 'hidden'
+      iframe.style.border = 'none'
+
+      // 绑定iframe的onload事件
+      if (onload && Object.prototype.toString.call(onload) === '[object Function]') {
+        if (iframe.attachEvent) {
+          iframe.attachEvent('onload', onload)
+        } else if (iframe.addEventListener) {
+          iframe.addEventListener('load', onload)
+        } else {
+          iframe.onload = onload
+        }
+      }
+
+      iframe.src = src
+      // 把iframe加载到dom下面
+      dom.appendChild(iframe)
+      return iframe
+    },
+    closeGameDialog () {
+      this.destroyIframe(this.iframe)
+      this.dialogVisible = false
+    },
+    destroyIframe (iframe) {
+      // 把iframe指向空白页面，这样可以释放大部分内存。
+      iframe.src = 'about:blank'
+      try {
+        iframe.contentWindow.document.write('')
+        iframe.contentWindow.document.clear()
+      } catch (e) {}
+      // 把iframe从页面移除
+      iframe.parentNode.removeChild(iframe)
     }
   },
   beforeRouteLeave (to, from, next) {
@@ -322,6 +382,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+@import "~@/assets/styles/global";
 .wrapper{
   position: relative;
   width: 100%;
@@ -334,7 +395,7 @@ export default {
   .content{
     width: 100%;
     overflow: hidden;
-    background: url("../../assets/imgs/electric/bg5.png") 0 0 no-repeat, linear-gradient(#140523, #140523);
+    background: url("http://172.16.135.103/ui/gfx_frontend/slot_games//bg5.png") 0 0 no-repeat, linear-gradient(#140523, #140523);
     background-size: 100%;
     .container{
       width: 1200px;
@@ -400,7 +461,7 @@ export default {
               .tryGame{
                 position: absolute;
                 left: 10px;
-                top: 60px;
+                top: 50px;
               }
             }
           }
@@ -424,11 +485,11 @@ export default {
           width: 1200px;
           height: 134px;
           overflow: hidden;
-          background: url("../../assets/imgs/electric/panelHead.png") center center no-repeat;
+          background: url("http://172.16.135.103/ui/gfx_frontend/slot_games//panelHead.png") center center no-repeat;
           .platformList{
             width: 100%;
             overflow: hidden;
-            background-color: #000;
+            background-color: $--color-text-primary;
             margin-top: 10px;
             position: relative;
             .swiper-button-prev,.swiper-button-next{
@@ -517,7 +578,7 @@ export default {
               margin-top: 3px;
               margin-right: 35px;
               float: right;
-              background: #000;
+              background: $--color-text-primary;
               padding: 5px;
               input{
                 height: 21px;
@@ -571,7 +632,7 @@ export default {
                 width: 166px;
                 overflow: hidden;
                 img{
-                    background: #000;
+                    background: $--color-text-primary;
                 }
               }
               .gamePic{
@@ -693,10 +754,10 @@ export default {
     top: 30px;
     left: 50%;
     transform: translateX(34%);
-    z-index: 9;
+    z-index: 1;
     width: 320px;
     height: 356px;
-    background: url("../../assets/imgs/electric/Layer804.png");
+    background: url("http://172.16.135.103/ui/gfx_frontend/slot_games//Layer804.png");
     background-size: cover;
     .jackpot{
       .el-carousel{
@@ -739,6 +800,27 @@ export default {
           color: white;
         }
       }
+    }
+  }
+}
+.gamePopupr{
+  width: 100%;
+  height: 90vh;
+  background: #000;
+  position: absolute;
+  top: -10vh;
+  left: 0;
+  box-shadow: 0 0 8px rgba(0, 0, 0, .8);
+  text-align: center;
+  .close{
+    font-size: 40px;
+    color: #fff;
+    position: absolute;
+    top: -20px;
+    right: -20px;
+    cursor: pointer;
+    &:hover{
+      color: #999999;
     }
   }
 }

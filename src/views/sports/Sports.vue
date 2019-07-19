@@ -9,13 +9,12 @@
       </div>
       <div class="platformList">
         <div class="platform"
-             @click="enterGame(item.games[0].gameId, index)"
+             @click="enterGame(item.games[0].gameId, platformIdList[index])"
              @mousemove="enterPlatform"
              v-for="(item, index) in platformList"
              :key="index"
-             :style="'background: url(\'http://172.16.135.103/ui/gfx_frontend/sport_game/tennis.png\') center 100% no-repeat;animation-delay: '+index+'00ms;animation-fill-mode: backwards!important;'">
+             :style="'background: url(\'http://172.16.135.103/ui/gfx_frontend/sport_game/avia-banner-small.png\') center 100% no-repeat;animation-delay: '+index+'00ms;animation-fill-mode: backwards!important;'">
           <div class="intro">
-            让球、大小、半全场、波胆、单双、总入球、混合过关等多元竞猜。 每月超过1500场混球赛事，足球、篮球、橄榄球、网球应有尽有！
           </div>
         </div>
       </div>

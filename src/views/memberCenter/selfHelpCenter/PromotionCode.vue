@@ -66,7 +66,7 @@
 </template>
 
 <script>
-import Pagination from '@/components/noc-pagination'
+import Pagination from '@/components/noc_pagination'
 import TransferCouponOrChip from '../children/TransferCouponOrChip'
 import pickerMix from '@/mixins/picker.mix'
 import pageMix from '@/mixins/page.mix'
@@ -132,7 +132,6 @@ export default {
         color: #fff;
         font-size: 14px;
         font-weight: 500;
-        font-family: '微软雅黑';
       }
     }
     span {

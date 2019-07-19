@@ -1,7 +1,7 @@
 <template>
   <div class="Content">
     <div class="reference">
-      <div class="connect"></div>
+      <!-- <div class="connect"></div>
       <step :stepNumber="1" titleContent="来源账户">
         <div class="platformList">
           <div
@@ -68,7 +68,7 @@
             </el-form-item>
           </el-form>
         </div>
-      </step>
+      </step> -->
     </div>
   </div>
 </template>
@@ -261,155 +261,155 @@ export default {
       width: 93%;
     }
     .reference{
-      margin: 10px auto;
-      width: 1350px;
+      margin: 10px 20px;
+      // width: 1350px;
       height: auto;
       background-color: white;
       border-radius: 5px;
       padding: 15px;
       position: relative;
-      .connect{
-        width: 75px;
-        height: 288px;
-        background: url("http://172.16.135.103/ui/gfx_frontend/member_centre/conversion.png") center center no-repeat;
-        position: absolute;
-        right: 32px;
-        top: 160px;
-      }
-      .platformList{
-        display: flex;
-        flex-wrap: wrap;
-        .platformItem{
-          cursor: pointer;
-          width: 220px;
-          height: 80px;
-          margin-right: 40px;
-          margin-bottom: 20px;
-          padding: 13px;
-          box-sizing: border-box;
-          border-radius: 5px;
-          border: 1px solid #999999;
-          position: relative;
-          overflow: hidden;
-          .logo{
-            width: 50px;
-            height: 50px;
-            border-radius: 25px;
-            overflow: hidden;
-            float: left;
-            img{
-              width: 50px;
-              height: 50px;
-            }
-          }
-          .container{
-            margin-top: 1px;
-            margin-left: 5px;
-            float: left;
-            span, div {
-              line-height: 22px;
-              font-size: 15px;
-            }
-            .gameAmount{
-              .gameBalance{
-                color: #666666;
-                &:hover{
-                  color: #eb844c;
-                }
-              }
-              .orange{
-                color: #eb844c;
-              }
-              .status{
-                position: absolute;
-                right: 12px;
-                bottom: 2px;
-                color: red;
-              }
-            }
-            .icongengxin1 {
-              cursor: pointer;
-              font-size: 28px;
-              position: absolute;
-              right: 5px;
-              top: 5px;
-            }
-            .balanceLoading{
-              color: #3e3e3e;
-              animation: rotate 2s infinite;
-            }
-          }
-        }
-        .platformItem:nth-child(4n){
-          margin-right: 0;
-        }
-        .checkedPlatform{
-          border: 2px solid #4DC033;
-          position: relative;
-          &:before{
-            content: "✔";
-            color: white;
-            position: absolute;
-            bottom: 0;
-            right: 3px;
-            z-index: 2;
-          }
-          &:after{
-            display: block;
-            content: "";
-            width: 0;
-            height: 0;
-            line-height: 0;
-            border: 15px solid transparent;
-            border-right: 15px solid #4DC033;
-            position: absolute;
-            bottom: -15px;
-            right: -15px;
-            transform: rotate(-135deg);
-          }
-        }
-      }
-      .addAmount{
-        .couponList{
-          display: flex;
-          margin-bottom: 20px;
-          flex-wrap: wrap;
-          .coupon{
-            width: 142px;
-            height: 84px;
-            padding: 20px 3px;
-            box-sizing: border-box;
-            margin-right: 20px;
-            display: flex;
-            background: url("http://172.16.135.103/ui/gfx_frontend/member_centre/coupon_1.png") center center no-repeat;
-            cursor: pointer;
-            .sumup{
-              margin-top: 10px;
-              margin-left: 10px;
-              span{
-                display: block;
-                font-size: 13px;
-                color: white;
-              }
-              span:last-child{
-                font-size: 11px;
-              }
-            }
-            .give{
-              font-size: 200%;
-              line-height: 56px;
-              font-weight: bold;
-              letter-spacing: -1px;
-              background: linear-gradient(#B0C3F4, #fff 60%, #B0C3F4);
-              -webkit-background-clip: text;
-              color: transparent;
-            }
-          }
-          .choose{
-            background: url("http://172.16.135.103/ui/gfx_frontend/member_centre/coupon_2.png") center center no-repeat;
-          }
-        }
-      }
+      // .connect{
+      //   width: 75px;
+      //   height: 288px;
+      //   background: url("http://172.16.135.103/ui/gfx_frontend/member_centre/conversion.png") center center no-repeat;
+      //   position: absolute;
+      //   right: 32px;
+      //   top: 160px;
+      // }
+      // .platformList{
+      //   display: flex;
+      //   flex-wrap: wrap;
+      //   .platformItem{
+      //     cursor: pointer;
+      //     width: 220px;
+      //     height: 80px;
+      //     margin-right: 40px;
+      //     margin-bottom: 20px;
+      //     padding: 13px;
+      //     box-sizing: border-box;
+      //     border-radius: 5px;
+      //     border: 1px solid #999999;
+      //     position: relative;
+      //     overflow: hidden;
+      //     .logo{
+      //       width: 50px;
+      //       height: 50px;
+      //       border-radius: 25px;
+      //       overflow: hidden;
+      //       float: left;
+      //       img{
+      //         width: 50px;
+      //         height: 50px;
+      //       }
+      //     }
+      //     .container{
+      //       margin-top: 1px;
+      //       margin-left: 5px;
+      //       float: left;
+      //       span, div {
+      //         line-height: 22px;
+      //         font-size: 15px;
+      //       }
+      //       .gameAmount{
+      //         .gameBalance{
+      //           color: #666666;
+      //           &:hover{
+      //             color: #eb844c;
+      //           }
+      //         }
+      //         .orange{
+      //           color: #eb844c;
+      //         }
+      //         .status{
+      //           position: absolute;
+      //           right: 12px;
+      //           bottom: 2px;
+      //           color: red;
+      //         }
+      //       }
+      //       .icongengxin1 {
+      //         cursor: pointer;
+      //         font-size: 28px;
+      //         position: absolute;
+      //         right: 5px;
+      //         top: 5px;
+      //       }
+      //       .balanceLoading{
+      //         color: #3e3e3e;
+      //         animation: rotate 2s infinite;
+      //       }
+      //     }
+      //   }
+      //   .platformItem:nth-child(4n){
+      //     margin-right: 0;
+      //   }
+      //   .checkedPlatform{
+      //     border: 2px solid #4DC033;
+      //     position: relative;
+      //     &:before{
+      //       content: "✔";
+      //       color: white;
+      //       position: absolute;
+      //       bottom: 0;
+      //       right: 3px;
+      //       z-index: 2;
+      //     }
+      //     &:after{
+      //       display: block;
+      //       content: "";
+      //       width: 0;
+      //       height: 0;
+      //       line-height: 0;
+      //       border: 15px solid transparent;
+      //       border-right: 15px solid #4DC033;
+      //       position: absolute;
+      //       bottom: -15px;
+      //       right: -15px;
+      //       transform: rotate(-135deg);
+      //     }
+      //   }
+      // }
+      // .addAmount{
+      //   .couponList{
+      //     display: flex;
+      //     margin-bottom: 20px;
+      //     flex-wrap: wrap;
+      //     .coupon{
+      //       width: 142px;
+      //       height: 84px;
+      //       padding: 20px 3px;
+      //       box-sizing: border-box;
+      //       margin-right: 20px;
+      //       display: flex;
+      //       background: url("http://172.16.135.103/ui/gfx_frontend/member_centre/coupon_1.png") center center no-repeat;
+      //       cursor: pointer;
+      //       .sumup{
+      //         margin-top: 10px;
+      //         margin-left: 10px;
+      //         span{
+      //           display: block;
+      //           font-size: 13px;
+      //           color: white;
+      //         }
+      //         span:last-child{
+      //           font-size: 11px;
+      //         }
+      //       }
+      //       .give{
+      //         font-size: 200%;
+      //         line-height: 56px;
+      //         font-weight: bold;
+      //         letter-spacing: -1px;
+      //         background: linear-gradient(#B0C3F4, #fff 60%, #B0C3F4);
+      //         -webkit-background-clip: text;
+      //         color: transparent;
+      //       }
+      //     }
+      //     .choose{
+      //       background: url("http://172.16.135.103/ui/gfx_frontend/member_centre/coupon_2.png") center center no-repeat;
+      //     }
+      //   }
+      // }
     }
   }
 

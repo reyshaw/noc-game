@@ -107,7 +107,7 @@ export default {
 <style scoped lang="scss">
   .Content{
     margin: 0 auto;
-    width: 1350px;
+    // width: 1350px;
     height: auto;
     background-color: white;
     border-radius: 5px;

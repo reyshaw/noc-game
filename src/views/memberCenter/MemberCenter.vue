@@ -1,8 +1,10 @@
 <template>
   <div class="wrapper">
     <div class="content">
-      <member-info v-if="ROLE==='member'"></member-info>
-      <member-function :proute="proute"></member-function>
+      <div>
+        <member-info v-if="ROLE==='member'"></member-info>
+        <member-function :proute="proute"></member-function>
+      </div>
     </div>
   </div>
 </template>
@@ -44,10 +46,14 @@ export default {
   background-color: #0A1725;
   overflow: hidden;
   .content{
-    width: 1600px;
+    max-width: 1200px;
+    min-width: 960px;
     background-color: #fff;
     margin: 50px auto;
-    padding: 26px;
+    padding: 20px / 16px * 1rem 0px;
+    >div {
+      margin: 0px 20px / 16px * 1rem;
+    }
   }
 }
 </style>

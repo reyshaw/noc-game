@@ -120,7 +120,7 @@
 
 <script>
 import pageMix from '@/mixins/page.mix'
-import Pagination from '@/components/noc-pagination'
+import Pagination from '@/components/noc_pagination'
 import handleCopy from '@/assets/scripts/clipboard'
 import {
   PATH_RECOMMEND,

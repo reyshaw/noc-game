@@ -11,7 +11,7 @@
           </ul>
         </div>
         <el-form v-if="showRegister" label-width="80px" :rules="rules" ref="registerForm" :model="form">
-          <div v-for="(item, index) in registerItems" :key="index">
+          <div v-for="(item, index) in registerItems" :key="index" class="registerForm">
             <el-form-item :prop="item.model">
               <el-input
                 size="medium"
@@ -54,22 +54,28 @@
           </el-form-item>
         </el-form>
         <el-form v-if="!showRegister" ref="loginForm" :model="loginForm" label-width="80px">
-          <el-form-item>
-            <el-input v-model="loginForm.account"  placeholder="请输入用户名" size="medium" style="width: 430px">
-              <i slot="prefix" class="iconfont iconuser-fill"></i>
-            </el-input>
-          </el-form-item>
-          <el-form-item>
-            <el-input v-model="loginForm.password" placeholder="请输入密码" size="medium" style="width: 431px">
-              <i slot="prefix" class="iconfont iconlock-fill"></i>
-            </el-input>
-          </el-form-item>
-          <el-form-item v-if="verifyCodeShowStatus">
-            <el-input v-model="loginForm.verifyCode" placeholder="请输入验证码" size="medium" style="width: 250px">
-              <i slot="prefix" class="iconfont iconlock-fill"></i>
-            </el-input>
-            <div class="imgArea" @click="updateImgUrl()"><img :src="imgUrl" alt="验证码" ></div>
-          </el-form-item>
+          <div class="registerForm">
+            <el-form-item>
+              <el-input v-model="loginForm.account"  placeholder="请输入用户名" size="medium" style="width: 430px">
+                <i slot="prefix" class="iconfont iconuser-fill"></i>
+              </el-input>
+            </el-form-item>
+          </div>
+          <div class="registerForm">
+            <el-form-item>
+              <el-input v-model="loginForm.password" placeholder="请输入密码" size="medium" style="width: 431px">
+                <i slot="prefix" class="iconfont iconlock-fill"></i>
+              </el-input>
+            </el-form-item>
+          </div>
+          <div class="registerForm">
+            <el-form-item v-if="verifyCodeShowStatus">
+              <el-input v-model="loginForm.verifyCode" placeholder="请输入验证码" size="medium" style="width: 250px">
+                <i slot="prefix" class="iconfont iconlock-fill"></i>
+              </el-input>
+              <div class="imgArea" @click="updateImgUrl()"><img :src="imgUrl" alt="验证码" ></div>
+            </el-form-item>
+          </div>
           <el-form-item>
             <el-button class="submit" type="text" style="color: white;float: right;margin-right: 80px">忘记密码？</el-button>
           </el-form-item>
@@ -93,13 +99,12 @@ import {
   PATH_REGISTER_MEMBER,
   PATH_REGISTER_AGENT,
   PATH_VERIFYCODE_IMAGE,
-  PATH_MEMBERLOGIN_LOGIN,
+  PATH_SELECTMEMCONFIG_LOGIN,
   PATH_SEND_EMAIL
 } from '@/service/member/urls.js'
 import {formatDate, getUUID} from '@/assets/scripts/utils'
-// import { setSessionStorage } from '@/assets/scripts/storage'
-import {mapGetters} from 'vuex'
-// import types from '@/store/share.types'
+import {mapGetters, mapActions} from 'vuex'
+import CanvasNest from 'canvas-nest.js'
 
 export default {
   name: 'register',
@@ -121,6 +126,11 @@ export default {
       }
     }
     return {
+      config: {
+        color: '255,255,255',
+        opacity: 1,
+        count: 200
+      },
       scroll: 0, // 滚动长度
       showRegister: true,
       registerItems: [], // 配置项数据
@@ -166,6 +176,7 @@ export default {
         random: '',
         timestamp: ''
       },
+      cn: undefined,
       rules: { // 验证规则
         account: [
           { required: true, message: '请输入您的会员账号', trigger: 'blur' },
@@ -218,15 +229,17 @@ export default {
     ...mapGetters(['CONFIG', 'ROLE'])
   },
   mounted () {
-    window.addEventListener('scroll', this.scrollDs, true)
+    // window.addEventListener('scroll', this.scrollDs, true)
+    this.cn = new CanvasNest(this.$refs.bak, this.config)
     this.getConfig()
   },
   methods: {
-    scrollDs () { // 0.1 背景滚动变化
-      this.scroll = this.$refs.reminder.getBoundingClientRect().top
-      this.$refs.bak.style.backgroundSize = 'auto ' + (-Math.round((this.scroll / 1372).toFixed(2) * 33) / 2.5 + 85) + '%'
-      this.$refs.contentWrapper.style.backgroundColor = 'rgba(16, 16, 25, ' + ((-0.5 + this.scroll / 1372).toFixed(1)) + ')'
-    },
+    ...mapActions(['SET_LOGIN', 'SET_LOGOUT', 'SET_CONFIG']),
+    // scrollDs () { // 0.1 背景滚动变化
+    //   this.scroll = this.$refs.reminder.getBoundingClientRect().top
+    //   this.$refs.bak.style.backgroundSize = 'auto ' + (-Math.round((this.scroll / 1372).toFixed(2) * 33) / 2.5 + 85) + '%'
+    //   this.$refs.contentWrapper.style.backgroundColor = 'rgba(16, 16, 25, ' + ((-0.5 + this.scroll / 1372).toFixed(1)) + ')'
+    // },
     updateImgUrl () { // 0.2 图像验证码更新
       this.imgUrl = ''
       this.headers.randomregister = getUUID()
@@ -434,47 +447,61 @@ export default {
         this.$message.error(err)
       })
     },
-    loginNow () {
+    async getVerifyCodeStatus () { // 获取该会员是否需要验证码
+      await this.get(PATH_SELECTMEMCONFIG_LOGIN, {memberAccount: this.loginForm.account}).then(res => {
+        if (res.status) {
+          this.verifyCodeShowStatus = !res.data.verifyCodeShowStatus
+        } else {
+          this.verifyCodeShowStatus = false
+        }
+      }, err => {
+        console.log(err)
+      })
+    },
+    async loginNow () { // 5 用户登录
+      await this.getVerifyCodeStatus()
       if (this.loginForm.account && this.loginForm.password) {
-        let payload = {
-          memberAccount: this.loginForm.account, // 登录账号
-          memberPassword: this.loginForm.password, // 登录密码
-          verifyCode: this.loginForm.verifyCode // 验证码
-        }
-        let header = {
-          randomregister: this.headers.randomregister,
-          timestamp: this.headers.timestamp
-        }
-        this.post(PATH_MEMBERLOGIN_LOGIN, payload, header).then(res => {
-          if (res.status) {
-            this.$store.commit('SET_TOKEN', res.data.token)
-            this.$store.commit('SET_BASE_INFO', res.data.profile)
-            this.$message({type: 'success', message: '恭喜您登陆成功'})
+        if (!this.verifyCodeShowStatus || (this.verifyCodeShowStatus && this.loginForm.verifyCode)) {
+          let payload = {
+            memberAccount: this.loginForm.account, // 登录账号
+            memberPassword: this.loginForm.password, // 登录密码
+            verifyCode: this.loginForm.verifyCode // 验证码
+          }
+          let agentPayload = {
+            agentAccount: this.loginForm.account, // 登录账号
+            agentPassword: this.loginForm.password, // 登录密码
+            loginVerifyCode: this.loginForm.verifyCode // 验证码
+          }
+          if (await this.SET_LOGIN({user: this.ROLE === 'member' ? payload : agentPayload, header: this.headers})) {
+            this.$message.success('恭喜您登陆成功！')
+            let path
+            if (this.ROLE === 'agent') {
+              path = this.ROLE + '_index'
+            } else {
+              path = 'index'
+            }
             this.$router.push({
-              name: 'index'
+              name: path,
+              params: 'login'
             })
           } else {
             this.updateImgUrl()
-            // this.$message({
-            //   type: 'warning',
-            //   message: res.msg
-            // })
           }
-        }, err => {
-          this.$message.error(err)
-        })
+        } else {
+          this.updateImgUrl()
+        }
       } else {
-        this.updateImgUrl()
-        // this.$message({
-        //   type: 'warning',
-        //   message: '账号密码不能为空'
-        // })
+        this.$message({
+          type: 'warning',
+          message: '账号密码不能为空'
+        })
       }
     }
   },
   beforeRouteLeave (to, from, next) { // 离开路由删除滚动事件监听
     // removeSessionStorage()
-    window.removeEventListener('scroll', this.scrollDs, true)
+    this.cn.destroy()
+    // window.removeEventListener('scroll', this.scrollDs, true)
     next()
   }
 }
@@ -482,12 +509,16 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+$--color-text-primary: #000 !default;
+$--color-white: #fff !default;
+$_color_login_bg: #3d0335;
 .wrapper{
   min-width: 290px;
   font-size: 14px;
   overflow: hidden;
   .bak{
     position: fixed;
+    top: 0;
     z-index: -1;
     width: 100%;
     height: 1400px;
@@ -537,7 +568,7 @@ export default {
           width: 191px;
           display: inline-block;
           height: 48px;
-          background-color: #000;
+          background-color: $--color-text-primary;
           border-radius: 2px;
           text-align: center;
           cursor: pointer;

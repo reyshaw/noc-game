@@ -2,11 +2,7 @@
   <div class="wrapper">
     <section class="home-content">
       <div class="home-banner">
-        <el-carousel indicator-position="inside" id="home-el-carousel" height="550px">
-          <el-carousel-item v-for="item in 4" :key="item">
-            <div :class="`banner-${item}`">{{ item }}</div>
-          </el-carousel-item>
-        </el-carousel>
+        <slider :imgURLS="imgURLS"></slider>
       </div>
       <div class="home-payment-info"> <!--支付的快捷信息-->
         <ul>
@@ -88,7 +84,7 @@
                                :Key="index">
                             <p>
                               <span :class="{small: game.providerVoList.length < 3}">
-                                <img src="../../assets/imgs/footer/og.png"
+                                <img src="http://172.16.135.103/ui/gfx_frontend/footer/og.png"
                                      :alt="ety.customName">
                               </span>
                               <strong>{{ety.customName}}</strong>
@@ -106,9 +102,9 @@
           </div>
           <div class="advantage">
             <ol>
-              <li><strong>奖励多</strong><img src="~@/assets/imgs/footer/stars.png"/> </li>
-              <li><strong>人气足</strong><img src="~@/assets/imgs/footer/stars.png"/></li>
-              <li><strong>安全可靠</strong><img src="~@/assets/imgs/footer/stars.png"/></li>
+              <li><strong>奖励多</strong><img src="http://172.16.135.103/ui/gfx_frontend/footer/stars.png"/> </li>
+              <li><strong>人气足</strong><img src="http://172.16.135.103/ui/gfx_frontend/footer/stars.png"/></li>
+              <li><strong>安全可靠</strong><img src="http://172.16.135.103/ui/gfx_frontend/footer/stars.png"/></li>
             </ol>
             <div class="phone-box"></div>
             <div class="middle">
@@ -128,43 +124,54 @@
               </div>
             </div>
             <div class="right">
-              <img src="~@/assets/imgs/footer/ogmaster.png"/>
+              <img src="http://172.16.135.103/ui/gfx_frontend/footer/ogmaster.png"/>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <el-scrollbar
-      :native="false"
-      style="height: 100%;width: 100%">
-      <el-dialog
-        :visible.sync="dialogVisible"
-        width="1380px">
-        <noc-popuper></noc-popuper>
-        <i class="el-icon-error close" @click="dialogVisible=!dialogVisible"></i>
-      </el-dialog>
-    </el-scrollbar>
+    <noc-dialog
+      :dialogVisible = "dialogVisible"
+      :width="'40%'"
+      @closeDialog="dialogVisible=false">
+      <template
+        slot="dialog-content">
+        <img src="http://172.16.135.103/ui/gfx_frontend/popuper/popuper.jpg" alt="公告">
+      </template>
+    </noc-dialog>
   </div>
 </template>
 
 <script>
 
 import gameConfig from './home.config'
+import Slider from '@/components/slider'
 import {createNamespacedHelpers} from 'vuex'
-import nocPopuper from '@/components/noc-popuper/nocPopuper'
+import NocPopuper from '@/components/noc_popuper/nocPopuper'
+import NocDialog from '@/components/noc_dialog/NocDialog'
 const { mapGetters: mapMemberGetters, mapActions: mapMemberAction } = createNamespacedHelpers('member')
+
 export default {
   name: 'index',
   components: {
-    nocPopuper
+    NocPopuper,
+    Slider,
+    NocDialog
   },
   data () {
     const _config = gameConfig
     const _show = !this.$store.state.token
     return {
       dialogVisible: _show,
-      ..._config
+      ..._config,
+      imgURLS: [
+        'http://172.16.135.103/ui/gfx_frontend/banner/banner1.jpg',
+        'http://172.16.135.103/ui/gfx_frontend/banner/banner2.jpg',
+        'http://172.16.135.103/ui/gfx_frontend/banner/banner3.jpg',
+        'http://172.16.135.103/ui/gfx_frontend/banner/banner4.jpg',
+        'http://172.16.135.103/ui/gfx_frontend/banner/banner5.png'
+      ]
     }
   },
   computed: {
@@ -269,11 +276,7 @@ export default {
     opacity: 0;
   }
   .home-banner {
-    .el-carousel__button {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-    }
+    background-color: #020f1d;
   }
 </style>
 <!-- Add "scoped" attribute to limit CSS to this component only -->
@@ -287,22 +290,17 @@ export default {
     width: 100%;
     vertical-align: bottom;
   }
-  .close{
-    font-size: 40px;
-    color: #fff;
-    position: absolute;
-    top: 0;
-    right:  - 64px;
-  }
   .wrapper {
     section.home-content {
       width: 100%;
       height: auto;
       background: url("../../assets/imgs/home/index-bg.png") no-repeat center;
-      background-position-y: 547px;
+      background-position-y: 450px;
       .home-banner {
+        margin: 0 auto;
         width: 100%;
-        height: 550px;
+        max-width: 1920px;
+        height: 450px;
         overflow: hidden;
         box-sizing: border-box;
         .el-carousel__item {
@@ -351,7 +349,6 @@ export default {
               color: #fff;
               line-height: 45px;
               strong {
-                font-family: '微软雅黑';
                 font-weight: bold;
                 color: #f6cc00;
                 margin-right: 10px;
@@ -367,7 +364,6 @@ export default {
                 float: left;
                 color: #fff;
                 strong {
-                  font-family: '微软雅黑';
                   display: block;
                   font-weight: bold;
                   font-size: 16px;
@@ -377,7 +373,6 @@ export default {
                   text-align: right;
                   display: block;
                   font-size: 16px;
-                  font-family: '微软雅黑';
                   &.last {
                     line-height: 80px;
                   }
@@ -389,7 +384,6 @@ export default {
                   margin-right: 10px;
                   line-height: 50px;
                   color: #e2d249;
-                  font-family: '微软雅黑';
                 }
               }
             }
@@ -440,6 +434,12 @@ export default {
                 &:hover {
                   cursor: pointer;
                 }
+                img{
+                  transition: .3s ease-in-out;
+                }
+                &:hover img{
+                  transform: scale(1.03);
+                }
                 .mask { /***弹层**/
                   width: 100%;
                   height: 100%;
@@ -481,7 +481,6 @@ export default {
                               display: block;
                               overflow: hidden;
                               color: #dfe9b2;
-                              font-family: '微软雅黑';
                               margin-bottom: 5px;
                               font-size: 13px;
                               margin-left: auto;
@@ -608,7 +607,6 @@ export default {
                 margin-top: 30px;
                 strong {
                   font-size: 25px;
-                  font-family: '微软雅黑';
                   color: #fff;
                 }
                 img {
@@ -625,7 +623,7 @@ export default {
               float: left;
               /*border: 1px solid green;*/
               border-radius: 30px;
-              background: url("../../assets/imgs/footer/phone.png") no-repeat center center;
+              background: url("http://172.16.135.103/ui/gfx_frontend/footer/phone.png") no-repeat center center;
             }
             .middle {
               width: 460px;

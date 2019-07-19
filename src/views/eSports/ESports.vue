@@ -21,7 +21,7 @@
                     leave-active-class="animated zoomOutRight">
           <swiper :options="currentSwiper.option" :ref="currentSwiper.name" @someSwiperEvent="callback" :class="currentSwiper.className" :key="currentSwiper.name">
             <swiper-slide v-for="(item, index) in swiperList" :key="index">
-              <img :src="require(`../../assets/imgs/esports/${item}`)" alt="item"  @click="enterGame(2890,0)">
+              <img :src="require(`../../assets/imgs/esports/${item}`)" alt="item"  @click="enterGame(2890,platformIdList[0])">
             </swiper-slide>
           </swiper>
         </transition>

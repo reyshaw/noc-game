@@ -76,7 +76,7 @@
 
 <script>
 import FilterCondition from '@/views/memberCenter/wedgit/FilterCondition'
-import Pagination from '@/components/noc-pagination'
+import Pagination from '@/components/noc_pagination'
 import pickerMix from '@/mixins/picker.mix'
 import pageMix from '@/mixins/page.mix'
 import GameTypeDialog from './Reports_Comp_Dialog'

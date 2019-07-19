@@ -1,4 +1,4 @@
-import {OGWLS_USER_CLIENT} from '@/service/prefix.path'
+import {OGWLS_USER_CLIENT} from '@/service/req.getway'
 
 // export const CONFIG = `${OGWLS_USER_CLIENT}/manage/systemProxyRegisterConfig/proxyRegisterConfigList`
 export const CONFIG = `${OGWLS_USER_CLIENT}/system/registerConfig/registerConfig`

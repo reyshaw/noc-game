@@ -38,75 +38,27 @@
         </div>
       </article>
     </main>
-    <el-dialog
-      title="提示"
-      :visible.sync="dialogVisible"
-      width="1200px"
-      :before-close="handleClose">
-      <div class="dialog-content">
-        <h1>{{currentActivity.promotionTitle}}</h1>
-        <p class="date">活动时间：{{currentActivity.promotionStartTime || 'xxxx-xx-xx'}}到{{currentActivity.promotionEndTime || 'xxxx-xx-xx'}}</p>
-        <div class="top-banner">
-          <div class="left"></div>
-          <div class="right">
-            <h2>其他活动</h2>
-            <ul>
-              <li v-for="item in 4" :key="item">
-                <p></p>
-                <p>优惠升级 报喜不断</p>
-              </li>
-            </ul>
-            <div class="spread">
-              <div class="img"></div>
-              <div class="download">
-                <p>宣传单</p>
-                <p>东方传奇 巅峰让利</p>
-                <p><button>下载</button></p>
-              </div>
-            </div>
-            <button class="join">我要参与</button>
-          </div>
-        </div>
-        <div class="items">
-          <p>优惠活动条款：</p>
-          <p>1.需将电脑版CQ9电子图标放在电子类二级导航栏第一顺位</p>
-          <p>2.需将手机版CQ9电子图标放在电子类第一顺位</p>
-          <p>3.需将电脑版/手机版CQ9电子《东方发发发》《东方传奇》两款游戏顺放第一，第二位</p>
-          <p>4.当CQ9电子累计有效投注达到活动规定数额后，CQ9电子在原有我司实际占成的基础上再给予不同%优惠</p>
-          <p>5.运营商网站上的测试账户不包括在每月营业额的计算中 </p>
-          <p>6.所有被发现作弊或篡改的经营者将自动取消资格参加此促销活动 </p>
-        </div>
-        <div class="activity-content">
-          <p>活动详情：</p>
-          <p>当CQ9电子累计有效投注达到活动规定数额后，CQ9电子在原有我司实际占成的基础上再给予不同%优惠，具体标准如下：</p>
-          <table>
-            <thead>
-              <tr>
-                <th>序号</th>
-                <th>CQ9电子当月有效投注</th>
-                <th>CQ9电子享受我司实际占成优惠% </th>
-                <th>活动有效期</th>
-              </tr>
-            </thead>
-            <tbody>
-            <tr>
-              <td>1</td>
-              <td>1000</td>
-              <td>50% </td>
-              <td>90天</td>
-            </tr>
-            </tbody>
-          </table>
-        </div>
-      </div>
-    </el-dialog>
+    <el-scrollbar
+      :native="false"
+      style="height: 100%;width: 100%">
+      <el-dialog
+        :visible.sync="dialogVisible"
+        width="1380px">
+        <noc-popuper class="popuper"></noc-popuper>
+        <i class="el-icon-error close" @click="dialogVisible=!dialogVisible" v-pointer></i>
+      </el-dialog>
+    </el-scrollbar>
   </div>
 </template>
 
 <script>
 import {PATH_ACTI_LIST} from '@/service/member/urls'
+import nocPopuper from '@/components/noc_popuper/nocPopuper'
 export default {
   name: 'promotion',
+  components: {
+    nocPopuper
+  },
   data () {
     return {
       loadingGame: false, // 加载更多
@@ -228,6 +180,7 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped lang="scss">
+  @import "~@/assets/styles/global";
   @keyframes left
   {
     0% {transform:translate(0px)}
@@ -399,7 +352,7 @@ export default {
     h1 {
       font-size: 32px;
       text-align: center;
-      color: #000;
+      color: $--color-text-primary;
     }
     .date {
       font-size: 20px;
@@ -435,7 +388,7 @@ export default {
               &:first-child {
                 width: 80px;
                 height: 80px;
-                background: #3d0335;
+                @include color-login-bg;
                 float: left;
               }
             }
@@ -503,10 +456,26 @@ export default {
       }
       table {
         text-align: center;
-        border: 1px solid #000;
+        border: 1px solid $--color-text-primary;
         margin: 20px auto;
         width: 80%;
       }
     }
+  }
+
+  .popuper{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: white;
+    overflow: hidden;
+  }
+  .close{
+    font-size: 40px;
+    color: #fff;
+    position: absolute;
+    top: 0;
+    right:  - 64px;
   }
 </style>

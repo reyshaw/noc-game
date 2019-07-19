@@ -54,7 +54,7 @@
 
 <script>
 import FilterCondition from '@/views/memberCenter/wedgit/FilterCondition'
-import Pagination from '@/components/noc-pagination'
+import Pagination from '@/components/noc_pagination'
 import pageMix from '@/mixins/page.mix'
 import {PATH_LIST_LUCKY} from '@/service/member/member_center.url'
 export default {

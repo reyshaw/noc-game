@@ -48,7 +48,7 @@
           <div class="fish" ref="fish">
             <img :src="'http://172.16.135.103/ui/gfx_frontend/fishing_game/fish_' + (index+1) + '.png'" alt="">
           </div>
-          <button class="start" @click="enterGame(3187, 0)" @mousedown="mousedown" @mouseup="mouseup">立即游戏</button>
+          <button class="start" @click="enterGame(3187, platformIdList[0])" @mousedown="mousedown" @mouseup="mouseup">立即游戏</button>
           <div class="layer">
             <canvas width="200" ref="layer" height="400"></canvas>
           </div>

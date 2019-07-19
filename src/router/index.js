@@ -1,11 +1,11 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import store from '@/store'
-import memberRoutes from './member.route'
-import agentRoutes from './agent.route'
+import memberRoutes from '@/router/modules/member.route'
+import agentRoutes from '@/router/modules/agent.route'
 
 Vue.use(Router)
-const _import = require('./_import_' + process.env.NODE_ENV)._import
+const _import = require('@/router/env/_import_' + process.env.NODE_ENV)._import
 
 const router = new Router({
   // mode: 'history',

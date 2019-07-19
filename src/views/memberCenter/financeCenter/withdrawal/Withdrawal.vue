@@ -25,8 +25,10 @@
               </el-form-item>
               <el-form-item label="取款密码">
                 <el-input type="password" v-model="form.withdrawPassword" placeholder="请输入取款密码" size="mini" :style="inputStyle"></el-input>
-                <a href="javascript: void(0);">忘记密码？</a>
-                <a href="javascript: void(0);">设置取款密码</a>
+                <div>
+                  <a href="javascript: void(0);" v-if="$store.state.baseInfo.withdrawalPassowrdState==1">忘记密码？</a>
+                  <a href="javascript: void(0);" v-else>设置取款密码</a>
+                </div>
               </el-form-item>
               <el-form-item>
                 <el-button type="success" size="small" @click="handleWithdraw">立即取款</el-button>
@@ -166,7 +168,7 @@ export default {
 <style scoped lang="scss">
 .container{
   margin: 0 auto;
-  width: 1350px;
+  // width: 1350px;
   height: auto;
   background-color: white;
   border-radius: 5px;
@@ -174,6 +176,9 @@ export default {
   .submitForm{
     display: flex;
     justify-content: space-evenly;
+    >form {
+      padding-right: 10px;
+    }
   }
 }
 </style>

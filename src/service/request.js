@@ -1,5 +1,4 @@
 import axios from 'axios'
-import {SUCCESS} from './response.status' // FAIL, ERROR_SHOW_MSG
 import {Message, Notification} from 'element-ui'
 import router from '@/router'
 import store from '@/store'
@@ -19,7 +18,7 @@ const request = axios.create({
 // 拦截请求
 request.interceptors.request.use(config => {
   config.data = JSON.stringify(config.data)
-  config.headers['common'].timestamp = new Date().getTime() // 携带时间戳 af83e9a3edc286995888bf5fed551cd2
+  // config.headers['common'].timestamp = new Date().getTime() // 携带时间戳 af83e9a3edc286995888bf5fed551cd2
   if (store.state.token) {
     config.headers['common'].token = store.state.token
   }
@@ -52,7 +51,7 @@ request.interceptors.response.use(res => { // 200开头的
     case 6022:
     case 6017:
       return {
-        status: SUCCESS,
+        status: true,
         data: getData(res),
         msg: (res && res.data.msg) || {}
       }

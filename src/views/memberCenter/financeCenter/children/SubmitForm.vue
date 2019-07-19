@@ -123,7 +123,7 @@ export default {
   justify-content: space-evenly;
   .el-form{
     margin-top: 27px;
-    width: 450px;
+    width: 540px;
     .el-form-item{
       margin-bottom: 0px;
       .input{

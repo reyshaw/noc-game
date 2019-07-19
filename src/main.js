@@ -6,7 +6,7 @@ import 'babel-polyfill'
 
 import router from './router'
 import store from './store'
-import { get, post, put, del } from './service/methods'
+import { get, post, put, patch, del } from './service/req.methods'
 
 // 样式
 import ElementUI from 'element-ui'
@@ -35,6 +35,7 @@ Vue.use(animated)
 Vue.prototype.get = get
 Vue.prototype.post = post
 Vue.prototype.put = put
+Vue.prototype.patch = patch
 Vue.prototype.delete = del
 Vue.prototype.store = store
 Vue.prototype.moment = moment

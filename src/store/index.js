@@ -1,6 +1,6 @@
 import Vue from 'vue'
 import Vuex from 'vuex'
-import share from './share.store'
+import share from './modules/share.store'
 import agent from './modules/agent.module'
 import member from './modules/member.module'
 import createPersistedState from 'vuex-persistedstate' // 持久化vuex

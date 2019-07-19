@@ -6,7 +6,7 @@
       </el-form-item>
       <el-form-item prop="amount" label="存款金额">
         <div class="input">
-          <input v-model.trim.number="form.amount" type="text" :placeholder="`存款范围${this.currentBank.minimumTransactionLimit}~${this.currentBank.maximumTransactionLimit}`" @blur="getOffer">
+          <input v-model.trim.number="form.amount" type="text" :placeholder="currentBank.maximumTransactionLimit?`存款范围${currentBank.minimumTransactionLimit}~${currentBank.maximumTransactionLimit}`:'请先选择银行'" @blur="getOffer">
           <div class="addon">.5</div>
         </div>
         <div class="promote" v-if="form.offerAmount && accept === 'accept'">

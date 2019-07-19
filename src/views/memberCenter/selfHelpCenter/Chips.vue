@@ -58,7 +58,7 @@
 </template>
 
 <script>
-import Pagination from '@/components/noc-pagination'
+import Pagination from '@/components/noc_pagination'
 import pickerMix from '@/mixins/picker.mix'
 import pageMix from '@/mixins/page.mix'
 import { PATH_GETCOUPON_CLIENT } from '@/service/member/member_center.url'
@@ -120,7 +120,6 @@ export default {
         color: #fff;
         font-size: 14px;
         font-weight: 500;
-        font-family: '微软雅黑';
       }
     }
     span {

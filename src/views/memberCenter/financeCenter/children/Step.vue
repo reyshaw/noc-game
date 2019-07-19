@@ -92,7 +92,7 @@ export default {
       width: calc(100% - 150px);
       min-height: 220px;
       box-sizing: border-box;
-      padding: 30px 50px;
+      padding: 15px 10px;
       float: left;
       position: relative;
       padding-bottom: 1000px;

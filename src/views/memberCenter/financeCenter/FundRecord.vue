@@ -135,7 +135,7 @@
 
 <script>
 import FilterCondition from '@/views/memberCenter/wedgit/FilterCondition'
-import Pagination from '@/components/noc-pagination'
+import Pagination from '@/components/noc_pagination'
 import pickerMix from '@/mixins/picker.mix'
 import pageMix from '@/mixins/page.mix'
 import {PATH_LIST_CAPITAL} from '@/service/member/member_center.url'
@@ -194,6 +194,9 @@ export default {
 </script>
 
 <style scoped lang="scss">
+  .el-date-editor--datetimerange.el-input__inner {
+    width: 360px;
+  }
   .close {
     position: relative;
     margin: 3px;
